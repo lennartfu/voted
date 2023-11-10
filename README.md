@@ -2,7 +2,7 @@
 
 ## Projektbeschreibung:
 
-Eine Website, die das Erstellen, Teilen und Bearbeiten von Abstimmungen, Umfragen, Terminplanung, und weiteren Features ermöglicht.
+Eine Webanwendung, die das Erstellen, Teilen und Bearbeiten von Abstimmungen, Terminplanung, Ranglisten und Tierlists ermöglicht.
 
 ## Liste der Teammitglieder:
 
@@ -24,4 +24,4 @@ Eine Website, die das Erstellen, Teilen und Bearbeiten von Abstimmungen, Umfrage
 
 - Django templates
 - Bootstrap
-- jQuery und/oder React
+- jQuery
