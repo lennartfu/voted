@@ -1,0 +1,13 @@
+*, *::before, *::after {
+    font-family: "Outfit", sans-serif;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+body {
+    background-color: #2C1B47;
+}
