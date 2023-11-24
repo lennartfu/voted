@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ title }}</title>
   {# Google fonts #}
   <link
@@ -21,8 +22,36 @@
   {# Other CSS #}
   {% block css %}{% endblock %}
 </head>
-<header>
-  {# nav #}
+<header class="navbar navbar-expand-lg sticky-top">
+  <nav class="container-fluid">
+    <a class="navbar-brand px-1" href="{% url 'home' %}">Voted</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-content">
+      Menü
+    </button>
+    <div class="collapse navbar-collapse" id="navbar-content">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item px-1">
+          <a class="nav-link" href="{% url 'home' %}">Home</a>
+        </li>
+        <li class="nav-item px-1">
+          <a class="nav-link" href="{% url 'vote_create' %}">Neue Abstimmung</a>
+        </li>
+      </ul>
+      <form class="d-flex nav-form me-auto">
+        <input class="form-control nav-input px-0 me-2" type="tel" minlength="5" maxlength="5"
+               placeholder="Code eingeben...">
+        <button class="btn nav-btn px-4" type="submit">Los</button>
+      </form>
+      <ul class="navbar-nav">
+        <li class="nav-item px-1">
+          <a class="nav-link" href="{% url 'log' %}">Meine Abstimmungen</a>
+        </li>
+        <li class="nav-item px-1">
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
 </header>
 <body>
 {# Body #}

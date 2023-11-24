@@ -3,9 +3,49 @@
 }
 
 header {
-    position: sticky;
-    top: 0;
-    z-index: 1;
+    background-color: #220A35;
+}
+
+.navbar-brand, .navbar-toggler, .nav-link {
+    color: #DCCAE9;
+}
+
+.navbar-brand:hover, .navbar-toggler:hover, .nav-link:hover {
+    color: #9356A0;
+}
+
+.nav-input {
+    flex-basis: fit-content;
+    background-color: #DCCAE9;
+    color: #220A35;
+    border: none;
+    border-radius: 1vmin;
+    text-align: center;
+}
+
+.nav-input::placeholder {
+    color: #220A35;
+}
+
+.nav-input:focus {
+    background-color: #DCCAE9;
+    color: #220A35;
+}
+
+.nav-input:focus::placeholder {
+    color: transparent;
+}
+
+.nav-btn {
+    background-color: #2C1B47;
+    color: #DCCAE9;
+    border: 2px solid #DCCAE9;
+    border-radius: 1vmin;
+}
+
+.nav-btn:hover {
+    background-color: #DCCAE9;
+    color: #220A35;
 }
 
 body {
