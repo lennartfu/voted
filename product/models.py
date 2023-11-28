@@ -10,11 +10,12 @@ def object_directory_path(instance, filename):
 
 class User(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    account = models.OneToOneField(DjangoUser, on_delete=models.CASCADE)
+    account = models.OneToOneField(DjangoUser, blank=True, null=True, on_delete=models.CASCADE)
 
 
 # Poll models
 class Poll(models.Model):
+    created_date = models.DateTimeField(auto_now=True)
     code = models.CharField(max_length=5, editable=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="%(app_label)s_%(class)s_created")
     participants = models.ManyToManyField(User, related_name="%(app_label)s_%(class)s_participated")
@@ -31,7 +32,7 @@ class Poll(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(blank=True)
     password = models.CharField(max_length=50, blank=True)
-    ends_at = models.DateTimeField(blank=True)
+    ends_at = models.DateTimeField(blank=True, null=True)
     logged_in_only = models.BooleanField(default=False)
     show_result = models.BooleanField(default=False)
 
