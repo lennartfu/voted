@@ -60,7 +60,25 @@ def settings(request):
     })
 
 
-def vote_create(request):
+def vote_create_choice(request):
+    return render(request, "base.html", {
+        "title": "Neue Abstimmung",
+    })
+
+
+def vote_create_date(request):
+    return render(request, "base.html", {
+        "title": "Neue Abstimmung",
+    })
+
+
+def vote_create_tierlist(request):
+    return render(request, "base.html", {
+        "title": "Neue Abstimmung",
+    })
+
+
+def vote_create_ranking(request):
     return render(request, "base.html", {
         "title": "Neue Abstimmung",
     })
