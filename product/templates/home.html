@@ -6,10 +6,13 @@
 {% block body %}
   <div class="container">
     {% if polls %}
-      {% for poll in polls %}
-        <a href="{% url "vote_code" poll.code %}">{{ poll.title }}</a>
-      {% endfor %}
+      <div class="row">
+        {% for poll in polls %}
+          <div class="col-3">
+            <a href="{% url "vote_code" poll.code %}">{{ poll.title }}</a>
+          </div>
+        {% endfor %}
+      </div>
     {% endif %}
-
   </div>
 {% endblock %}
