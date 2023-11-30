@@ -6,15 +6,8 @@ from product.models import User
 
 
 def home(request):
-    user_id = request.session.get("user_id")
-    if user_id:
-        # get existing user
-        user = User.objects.get(id=user_id)
-    else:
-        # create user
-        user = User.objects.create()
-        user_id = user.id
-        request.session["user_id"] = str(user_id)
+    # get user
+    user = User.objects.get(id=request.session.get("user_id"))
     # for each poll type, get the 4 latest polls the user participated in
     choice_polls = user.product_choicepolls_participated.all().order_by("-timestamp_created")
     datetime_polls = user.product_datetimepolls_participated.all().order_by("-timestamp_created")
