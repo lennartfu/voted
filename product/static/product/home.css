@@ -1,0 +1,88 @@
+h1 {
+    color: white;
+}
+
+.poll-window-link {
+    text-decoration: none;
+}
+
+.empty-log {
+    text-align: center;
+    color: white;
+}
+
+.register {
+    background-color: #DCCAE9;
+    border-radius: 10px;
+    transition: ease-in 0.3s;
+    border: 2px solid #DCCAE9;
+}
+
+.register:hover {
+    border: 2px solid #DCCAE9;
+}
+
+.poll-window {
+    border: 10px solid white;
+    background-color: #DCCAE9;
+    border-radius: 20px;
+    padding: 15px;
+    margin-bottom: 15px;
+    height: 200px;
+    box-sizing: border-box;
+    color: black;
+    position: relative;
+}
+
+.poll-window:hover {
+    background-color: #482c75;
+    color: white;
+    transition: ease-in 0.3s;
+}
+
+.date {
+    border: 10px solid #BD00FF;
+}
+
+.choice {
+    border: 10px solid #F800DF;
+}
+
+.ranking {
+    border: 10px solid #FF0099;
+}
+
+.tierlist {
+    border: 10px solid #8F00FF;
+}
+
+
+.poll-window h3 {
+    margin-bottom: 0px;
+    font-weight: 700;
+    position: absolute;
+    bottom: 35px;
+    left: 10px;
+
+}
+
+.poll-window p {
+    margin-bottom: 0px;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.icon-1 {
+    position: absolute;
+    right: 10px;
+    bottom: 12px;
+}
+
+
+.icon-2 {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+}
+
