@@ -1,7 +1,8 @@
 from itertools import chain
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
+from product.forms import ChoicePollForm, DateTimePollForm, TierlistPollForm, RankingPollForm
 from product.models import User
 
 
@@ -55,30 +56,78 @@ def settings(request):
 
 
 def vote_create_choice(request):
-    return render(request, "base.html", {
-        "title": "Neue Abstimmung",
+    user = User.objects.get(id=request.session.get("user_id"))
+    form = ChoicePollForm()
+    if request.method == "POST":
+        form = ChoicePollForm(request.POST)
+        if form.is_valid():
+            poll = form.save(commit=False)
+            poll.owner = user
+            poll.save()
+            poll.participants.add(user)
+            return redirect("vote_code", poll.code)
+    return render(request, "vote_create_choice.html", {
+        "title": "Neue Umfrage",
+        "user": user,
+        "form": form,
     })
 
 
 def vote_create_date(request):
-    return render(request, "base.html", {
-        "title": "Neue Abstimmung",
+    user = User.objects.get(id=request.session.get("user_id"))
+    form = DateTimePollForm()
+    if request.method == "POST":
+        form = DateTimePollForm(request.POST)
+        if form.is_valid():
+            poll = form.save(commit=False)
+            poll.owner = user
+            poll.save()
+            poll.participants.add(user)
+            return redirect("vote_code", poll.code)
+    return render(request, "vote_create_datetime.html", {
+        "title": "Neue Terminabstimmung",
+        "user": user,
+        "form": form,
     })
 
 
 def vote_create_tierlist(request):
-    return render(request, "base.html", {
-        "title": "Neue Abstimmung",
+    user = User.objects.get(id=request.session.get("user_id"))
+    form = TierlistPollForm()
+    if request.method == "POST":
+        form = TierlistPollForm(request.POST)
+        if form.is_valid():
+            poll = form.save(commit=False)
+            poll.owner = user
+            poll.save()
+            poll.participants.add(user)
+            return redirect("vote_code", poll.code)
+    return render(request, "vote_create_tierlist.html", {
+        "title": "Neue Tierlist",
+        "user": user,
+        "form": form,
     })
 
 
 def vote_create_ranking(request):
-    return render(request, "base.html", {
-        "title": "Neue Abstimmung",
+    user = User.objects.get(id=request.session.get("user_id"))
+    form = RankingPollForm()
+    if request.method == "POST":
+        form = RankingPollForm(request.POST)
+        if form.is_valid():
+            poll = form.save(commit=False)
+            poll.owner = user
+            poll.save()
+            poll.participants.add(user)
+            return redirect("vote_code", poll.code)
+    return render(request, "vote_create_ranking.html", {
+        "title": "Neue Rangliste",
+        "user": user,
+        "form": form,
     })
 
 
-def vote_code(request):
+def vote_code(request, code):
     return render(request, "base.html", {
         "title": "Abstimmung",
     })

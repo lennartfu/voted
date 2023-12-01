@@ -27,9 +27,17 @@ h2 {
     transition: ease-in 0.1s;
 }
 
+.poll-window path {
+    transition: ease-in 0.1s;
+}
+
 .poll-window:hover {
     background-color: #482c75;
     color: white;
+}
+
+.poll-window:hover path {
+    stroke: white;
 }
 
 .poll-window-new {
