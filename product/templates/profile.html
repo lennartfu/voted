@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static "product/profile.css" %}">
+{% endblock %}
+{% block body %}
+	<div class="container">
+      <h1 style="color:white">{{ user.username }}</h1>
+      <h1 style="color:white">{{ num_created }}</h1>
+      <h1 style="color:white">{{ num_votes }}</h1>
+      <h1 style="color:white">{{ favorite }}</h1>
+    </div>
+{% endblock %}
