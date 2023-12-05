@@ -1,7 +1,12 @@
-h1 {
+h1, h2 {
+    font-family: "Outfit", sans-serif;
     text-align: center;
     font-weight: 600;
     color: white;
+}
+
+li {
+    color: red;
 }
 
 label {
@@ -23,17 +28,18 @@ label {
     background-color: #DCCAE9;
 }
 
-.form-control {
+.container .form-control, .form-select {
     font-family: Montserrat, sans-serif;
     font-weight: 600;
     background-color: #DCCAE9;
 }
 
-.form-control:focus {
+.container .form-control:focus {
     background-color: #DCCAE9;
 }
 
 .form-check-input {
+    background-color: #DCCAE9;
     border: 3px solid #2C1B47;
 }
 
@@ -55,4 +61,8 @@ label {
 .poll-window-selected {
     background-color: #482c75;
     color: white;
+}
+
+.initial-hidden {
+    display: none;
 }
