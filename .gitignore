@@ -239,6 +239,7 @@ fabric.properties
 
 # Product related media files
 media/**
+product/media/**
 
 # VS Code
 .vscode/*

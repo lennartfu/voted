@@ -1,0 +1,83 @@
+h1 {
+    color: white;
+    font-weight: 600;
+    text-align: center;
+}
+
+.poll-window-link {
+    text-decoration: none;
+}
+
+h2 {
+    font-family: Montserrat, sans-serif;
+    font-size: 1.5rem;
+    text-align: center;
+    color: white;
+}
+
+.poll-window {
+    border: 10px solid white;
+    background-color: #DCCAE9;
+    border-radius: 20px;
+    padding: 15px;
+    margin-bottom: 15px;
+    height: 200px;
+    color: black;
+    position: relative;
+    transition: ease-in 0.1s;
+}
+
+.poll-window path {
+    transition: ease-in 0.1s;
+}
+
+.poll-window:hover {
+    background-color: #482c75;
+    color: white;
+}
+
+.poll-window:hover path {
+    stroke: white;
+}
+
+.poll-window-new {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.date {
+    border: 10px solid #BD00FF;
+}
+
+.choice {
+    border: 10px solid #F800DF;
+}
+
+.ranking {
+    border: 10px solid #FF0099;
+}
+
+.tierlist {
+    border: 10px solid #8F00FF;
+}
+
+.poll-window h3 {
+    font-weight: 700;
+
+}
+
+.icon-1 {
+    position: absolute;
+    right: 10px;
+    bottom: 12px;
+}
+
+
+.icon-2 {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+}
+

@@ -22,6 +22,8 @@
   {# Other CSS #}
   {% block css %}{% endblock %}
 </head>
+<body>
+{# Navbar #}
 <header class="navbar navbar-expand-lg sticky-top">
   <nav class="container-fluid">
     <a class="navbar-brand px-1" href="{% url 'home' %}">Voted</a>
@@ -53,12 +55,13 @@
     </div>
   </nav>
 </header>
-<body>
-{# Body #}
+{# Main content #}
 {% block body %}{% endblock %}
 {# jQuery #}
 <script src="{% static "jquery/jquery-3.7.1.min.js" %}"></script>
 {# Bootstrap #}
 <script src="{% static "bootstrap/bootstrap.bundle.min.js" %}"></script>
+{# Other scripts #}
+{% block scripts %}{% endblock %}
 </body>
 </html>

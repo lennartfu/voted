@@ -50,4 +50,5 @@ header {
 
 body {
     background-color: #2C1B47;
+    min-height: 100vh;
 }

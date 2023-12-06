@@ -1,0 +1,43 @@
+{% extends "vote_create.html" %}
+{% block extra_options %}
+  <div class="row justify-content-between mt-4">
+    <div class="col-auto">
+      {{ form.mode.errors }}
+      {{ form.mode.label_tag }}
+      <div class="input-group input-group-lg">
+        <span class="input-group-text px-3">Modus</span>
+        {{ form.mode }}
+      </div>
+    </div>
+    <div class="col-auto">
+      <div class="input-group input-group-lg">
+        <span class="input-group-text px-3">Mehrfachauswahl möglich</span>
+        {{ form.multiple_choice_allowed.errors }}
+        {{ form.multiple_choice_allowed.label_tag }}
+        <div class="input-group-text input-group-text-checkbox">
+          {{ form.multiple_choice_allowed }}
+        </div>
+      </div>
+    </div>
+    <div class="col-auto">
+      <div class="input-group input-group-lg">
+        <span class="input-group-text px-3">Ergebnis anzeigen</span>
+        {{ form.show_result.errors }}
+        {{ form.show_result.label_tag }}
+        <div class="input-group-text input-group-text-checkbox">
+          {{ form.show_result }}
+        </div>
+      </div>
+    </div>
+    <div class="col-auto">
+      <div class="input-group input-group-lg">
+        <span class="input-group-text px-3">Nur angemeldete Nutzer</span>
+        {{ form.logged_in_only.errors }}
+        {{ form.logged_in_only.label_tag }}
+        <div class="input-group-text input-group-text-checkbox">
+          {{ form.logged_in_only }}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

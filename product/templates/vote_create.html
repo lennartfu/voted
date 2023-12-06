@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static "product/home.css" %}">
+  <link rel="stylesheet" href="{% static "product/vote_create.css" %}">
+{% endblock %}
+{% block body %}
+  <div class="container mt-5">
+    <div class="new-voting-section">
+      <h1>Neue Abstimmung erstellen:</h1>
+      <div class="row mt-4">
+        <div class="col-3">
+          <a href="{% url "vote_create_choice" %}" class="poll-window-link">
+            <div
+                class="poll-window poll-window-new choice {% if title == "Neue Umfrage" %}poll-window-selected{% endif %}">
+              <h3 class="mb-0">Umfrage</h3>
+            </div>
+          </a>
+        </div>
+        <div class="col-3">
+          <a href="{% url "vote_create_date" %}" class="poll-window-link">
+            <div
+                class="poll-window poll-window-new date {% if title == "Neue Terminabstimmung" %}poll-window-selected{% endif %}">
+              <h3 class="mb-0">Termin</h3>
+            </div>
+          </a>
+        </div>
+        <div class="col-3">
+          <a href="{% url "vote_create_tierlist" %}" class="poll-window-link">
+            <div
+                class="poll-window poll-window-new tierlist {% if title == "Neue Tierlist" %}poll-window-selected{% endif %}">
+              <h3 class="mb-0">Tierlist</h3>
+            </div>
+          </a>
+        </div>
+        <div class="col-3">
+          <a href="{% url "vote_create_ranking" %}" class="poll-window-link">
+            <div
+                class="poll-window poll-window-new ranking {% if title == "Neue Rangliste" %}poll-window-selected{% endif %}">
+              <h3 class="mb-0">Rangliste</h3>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <form enctype="multipart/form-data" class="mt-4" method="POST">
+      {% csrf_token %}
+
+      <h2 class="mt-4">Einstellungen:</h2>
+
+      <div class="row justify-content-between mt-4">
+        <div class="col-12">
+          {{ form.title.errors }}
+          {{ form.title.label_tag }}
+          <div class="input-group input-group-lg">
+            <span class="input-group-text px-3">Titel</span>
+            {{ form.title }}
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-start mt-4">
+        <div class="col-2">
+          {{ form.days.errors }}
+          {{ form.days.label_tag }}
+          <div class="input-group input-group-lg">
+            <span class="input-group-text px-3">Tage</span>
+            {{ form.days }}
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="input-group input-group-lg">
+            <span class="input-group-text px-3">Stunden</span>
+            {{ form.hours.errors }}
+            {{ form.hours.label_tag }}
+            {{ form.hours }}
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="input-group input-group-lg">
+            <span class="input-group-text px-3">Minuten</span>
+            {{ form.minutes.errors }}
+            {{ form.minutes.label_tag }}
+            {{ form.minutes }}
+          </div>
+        </div>
+        <div class="col-1"></div>
+        <div class="col-5">
+          {{ form.password.errors }}
+          {{ form.password.label_tag }}
+          <div class="input-group input-group-lg">
+            <span class="input-group-text px-3">Passwort</span>
+            {{ form.password }}
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12">
+          {{ form.description.errors }}
+          {{ form.description.label_tag }}
+          <div class="input-group input-group-lg">
+            <span class="input-group-text px-3">Beschreibung</span>
+            {{ form.description }}
+          </div>
+        </div>
+      </div>
+
+      {% block extra_options %}{% endblock %}
+
+      <h2 class="mt-4">Antwortmöglichkeiten:</h2>
+
+      <div class="row">
+        {% for field in form.visible_fields %}
+          {% if "item_" in field.name %}
+            <div class="col-6 mt-4 {% if field.name == "item_1" or field.name == "item_2"%}visible{% else %}initial-hidden{% endif %}">
+              {{ field.errors }}
+              {{ field.label_tag }}
+              <div class="input-group input-group-lg">
+                <span class="input-group-text px-3">{{ field.label }}</span>
+                {{ field }}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="row justify-content-center mt-4">
+        <button class="btn btn-large btn-submit px-5 py-2" type="submit">Erstellen</button>
+      </div>
+
+    </form>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src={% static "product/forms.js" %}></script>
+  <script src={% static "product/vote_create.js" %}></script>
+{% endblock %}

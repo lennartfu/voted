@@ -1,8 +1,11 @@
+import datetime
 from itertools import chain
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.utils.timezone import now, timedelta
 
-from product.models import User
+from product.forms import ChoicePollForm, DateTimePollForm, TierlistPollForm, RankingPollForm
+from product.models import User, ChoiceObject, DateTimeObject, TierlistObject, RankingObject
 
 
 def home(request):
@@ -54,31 +57,101 @@ def settings(request):
     })
 
 
+def save_poll(user, form):
+    poll = form.save(commit=False)
+    poll.owner = user
+    # convert days, hours, minutes to int; set to 0 if None
+    days = int(form.cleaned_data.get("days") or 0)
+    hours = int(form.cleaned_data.get("hours") or 0)
+    minutes = int(form.cleaned_data.get("minutes") or 0)
+    # set timestamp_end if a value was provided
+    if days or hours or minutes:
+        poll.timestamp_end = now() + timedelta(days=days, hours=hours, minutes=minutes)
+    # save poll to database
+    poll.save()
+    poll.participants.add(user)
+    return poll
+
+
 def vote_create_choice(request):
-    return render(request, "base.html", {
-        "title": "Neue Abstimmung",
+    user = User.objects.get(id=request.session.get("user_id"))
+    form = ChoicePollForm()
+    if request.method == "POST":
+        form = ChoicePollForm(request.POST)
+        if form.is_valid():
+            poll = save_poll(user, form)
+            # get items from form; create a ChoiceObject for each
+            for field_name, field_value in form.cleaned_data.items():
+                if field_name.startswith("item_") and field_value:
+                    ChoiceObject(poll=poll, value=field_value).save()
+            return redirect("vote_code", poll.code)
+    return render(request, "vote_create_choice.html", {
+        "title": "Neue Umfrage",
+        "user": user,
+        "form": form,
     })
 
 
 def vote_create_date(request):
-    return render(request, "base.html", {
-        "title": "Neue Abstimmung",
+    user = User.objects.get(id=request.session.get("user_id"))
+    form = DateTimePollForm()
+    if request.method == "POST":
+        form = DateTimePollForm(request.POST)
+        if form.is_valid():
+            poll = save_poll(user, form)
+            # get items from form; create a DateTimeObject for each
+            for field_name, field_value in form.cleaned_data.items():
+                if field_name.startswith("item_") and field_value:
+                    DateTimeObject(poll=poll, value=field_value).save()
+            return redirect("vote_code", poll.code)
+    return render(request, "vote_create_datetime.html", {
+        "title": "Neue Terminabstimmung",
+        "user": user,
+        "form": form,
     })
 
 
 def vote_create_tierlist(request):
-    return render(request, "base.html", {
-        "title": "Neue Abstimmung",
+    user = User.objects.get(id=request.session.get("user_id"))
+    form = TierlistPollForm()
+    if request.method == "POST":
+        form = TierlistPollForm(request.POST, request.FILES)
+        if form.is_valid():
+            poll = save_poll(user, form)
+            # get items from form; create a TierlistObject for each
+            for field_name, field_value in form.cleaned_data.items():
+                if field_name.startswith("item_") and field_value:
+                    # TODO: upload/save image
+                    TierlistObject(poll=poll, image=field_value, value=field_value).save()
+            return redirect("vote_code", poll.code)
+    return render(request, "vote_create_tierlist.html", {
+        "title": "Neue Tierlist",
+        "user": user,
+        "form": form,
     })
 
 
 def vote_create_ranking(request):
-    return render(request, "base.html", {
-        "title": "Neue Abstimmung",
+    user = User.objects.get(id=request.session.get("user_id"))
+    form = RankingPollForm()
+    if request.method == "POST":
+        form = RankingPollForm(request.POST, request.FILES)
+        if form.is_valid():
+            poll = save_poll(user, form)
+            # get items from form; create a RankingObject for each
+            for field_name, field_value in form.cleaned_data.items():
+                if field_name.startswith("item_") and field_value:
+                    # TODO: upload/save image
+                    RankingObject(poll=poll, image=field_value, value=field_value).save()
+            return redirect("vote_code", poll.code)
+    return render(request, "vote_create_ranking.html", {
+        "title": "Neue Rangliste",
+        "user": user,
+        "form": form,
     })
 
 
-def vote_code(request):
+def vote_code(request, code):
     return render(request, "base.html", {
         "title": "Abstimmung",
     })

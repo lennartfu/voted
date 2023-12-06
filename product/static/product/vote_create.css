@@ -1,0 +1,68 @@
+h1, h2 {
+    font-family: "Outfit", sans-serif;
+    text-align: center;
+    font-weight: 600;
+    color: white;
+}
+
+li {
+    color: red;
+}
+
+label {
+    display: none;
+}
+
+.input-group * {
+    border: none;
+    border-radius: 1000px;
+}
+
+.input-group-text {
+    font-weight: 600;
+    color: #220A35;
+    background-color: #9C85DC;
+}
+
+.input-group-text-checkbox {
+    background-color: #DCCAE9;
+}
+
+.container .form-control, .form-select {
+    font-family: Montserrat, sans-serif;
+    font-weight: 600;
+    background-color: #DCCAE9;
+}
+
+.container .form-control:focus {
+    background-color: #DCCAE9;
+}
+
+.form-check-input {
+    background-color: #DCCAE9;
+    border: 3px solid #2C1B47;
+}
+
+.btn-submit {
+    width: auto;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background-color: #220A35;
+    color: #DCCAE9;
+    border: 3px solid #DCCAE9;
+    border-radius: 1vmin;
+}
+
+.btn-submit:hover {
+    background-color: #DCCAE9;
+    color: #220A35;
+}
+
+.poll-window-selected {
+    background-color: #482c75;
+    color: white;
+}
+
+.initial-hidden {
+    display: none;
+}
