@@ -1,35 +1,36 @@
 {% extends "vote_create.html" %}
 {% block extra_options %}
   <div class="row justify-content-between mt-4">
+
     <div class="col-6">
       {{ form.criteria_good.errors }}
-      {{ form.criteria_good.label_tag }}
       <div class="input-group input-group-lg">
-        <span class="input-group-text px-3">von</span>
+        {{ form.criteria_good.label_tag }}
         {{ form.criteria_good }}
-        <span class="input-group-text px-3">bis</span>
+        {{ form.criteria_bad.label_tag }}
         {{ form.criteria_bad }}
       </div>
     </div>
+
     <div class="col-auto">
+      {{ form.show_result.errors }}
       <div class="input-group input-group-lg">
-        <span class="input-group-text px-3">Ergebnis anzeigen</span>
-        {{ form.show_result.errors }}
         {{ form.show_result.label_tag }}
         <div class="input-group-text input-group-text-checkbox">
           {{ form.show_result }}
         </div>
       </div>
     </div>
+
     <div class="col-auto">
+      {{ form.logged_in_only.errors }}
       <div class="input-group input-group-lg">
-        <span class="input-group-text px-3">Nur angemeldete Nutzer</span>
-        {{ form.logged_in_only.errors }}
         {{ form.logged_in_only.label_tag }}
         <div class="input-group-text input-group-text-checkbox">
           {{ form.logged_in_only }}
         </div>
       </div>
     </div>
+
   </div>
 {% endblock %}

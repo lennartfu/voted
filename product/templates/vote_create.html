@@ -2,6 +2,7 @@
 {% load static %}
 {% block css %}
   <link rel="stylesheet" href="{% static "product/home.css" %}">
+  <link rel="stylesheet" href="{% static "product/forms.css" %}">
   <link rel="stylesheet" href="{% static "product/vote_create.css" %}">
 {% endblock %}
 {% block body %}
@@ -52,9 +53,8 @@
       <div class="row justify-content-between mt-4">
         <div class="col-12">
           {{ form.title.errors }}
-          {{ form.title.label_tag }}
           <div class="input-group input-group-lg">
-            <span class="input-group-text px-3">Titel</span>
+            {{ form.title.label_tag }}
             {{ form.title }}
           </div>
         </div>
@@ -63,24 +63,21 @@
       <div class="row justify-content-start mt-4">
         <div class="col-2">
           {{ form.days.errors }}
-          {{ form.days.label_tag }}
           <div class="input-group input-group-lg">
-            <span class="input-group-text px-3">Tage</span>
+            {{ form.days.label_tag }}
             {{ form.days }}
           </div>
         </div>
         <div class="col-2">
+          {{ form.hours.errors }}
           <div class="input-group input-group-lg">
-            <span class="input-group-text px-3">Stunden</span>
-            {{ form.hours.errors }}
             {{ form.hours.label_tag }}
             {{ form.hours }}
           </div>
         </div>
         <div class="col-2">
+          {{ form.minutes.errors }}
           <div class="input-group input-group-lg">
-            <span class="input-group-text px-3">Minuten</span>
-            {{ form.minutes.errors }}
             {{ form.minutes.label_tag }}
             {{ form.minutes }}
           </div>
@@ -88,9 +85,8 @@
         <div class="col-1"></div>
         <div class="col-5">
           {{ form.password.errors }}
-          {{ form.password.label_tag }}
           <div class="input-group input-group-lg">
-            <span class="input-group-text px-3">Passwort</span>
+            {{ form.password.label_tag }}
             {{ form.password }}
           </div>
         </div>
@@ -99,9 +95,8 @@
       <div class="row mt-4">
         <div class="col-12">
           {{ form.description.errors }}
-          {{ form.description.label_tag }}
           <div class="input-group input-group-lg">
-            <span class="input-group-text px-3">Beschreibung</span>
+            {{ form.description.label_tag }}
             {{ form.description }}
           </div>
         </div>
@@ -116,9 +111,8 @@
           {% if "item_" in field.name %}
             <div class="col-6 mt-4 {% if field.name == "item_1" or field.name == "item_2"%}visible{% else %}initial-hidden{% endif %}">
               {{ field.errors }}
-              {{ field.label_tag }}
               <div class="input-group input-group-lg">
-                <span class="input-group-text px-3">{{ field.label }}</span>
+                {{ field.label_tag }}
                 {{ field }}
               </div>
             </div>
