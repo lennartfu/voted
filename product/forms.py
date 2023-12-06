@@ -20,6 +20,17 @@ class RegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label="Passwort:")
 
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = DjangoUser
+        fields = ["first_name", "last_name", "username", "email"]
+
+    first_name = forms.CharField(required=False, disabled=True, max_length=50, label="Vorname:")
+    last_name = forms.CharField(required=False, disabled=True, max_length=50, label="Nachname:")
+    username = forms.CharField(max_length=50, label="Benutzername:")
+    email = forms.EmailField(label="Email:")
+
+
 class ChoicePollForm(forms.ModelForm):
     class Meta:
         model = ChoicePoll

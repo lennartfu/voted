@@ -1,11 +1,10 @@
-import datetime
 from itertools import chain
 
 from django.contrib import auth
 from django.shortcuts import render, redirect
 from django.utils.timezone import now, timedelta
 
-from product.forms import ChoicePollForm, DateTimePollForm, TierlistPollForm, RankingPollForm, LoginForm
+from product.forms import ChoicePollForm, DateTimePollForm, TierlistPollForm, RankingPollForm, LoginForm, UserForm
 from product.models import User, ChoiceObject, DateTimeObject, TierlistObject, RankingObject
 
 
@@ -65,8 +64,17 @@ def profile(request):
 
 
 def profile_edit(request):
-    return render(request, "base.html", {
+    if not request.user.is_authenticated:
+        return redirect("login")
+    form = UserForm(instance=request.user)
+    if request.method == "POST":
+        form = UserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("profile")
+    return render(request, "profile_edit.html", {
         "title": "Profil bearbeiten",
+        "form": form,
     })
 
 

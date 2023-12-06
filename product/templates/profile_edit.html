@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static "product/forms.css" %}">
+  <link rel="stylesheet" href="{% static "product/profile_edit.css" %}">
+{% endblock %}
+{% block body %}
+  <div class="container mt-5">
+    <h1>Profil bearbeiten:</h1>
+    <form method="POST">
+      {% csrf_token %}
+
+
+      <div class="row justify-content-center mt-4">
+        <button class="btn btn-large btn-submit px-5 py-2" type="submit">Fertig</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src={% static "product/forms.js" %}></script>
+{% endblock %}
