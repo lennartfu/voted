@@ -3,6 +3,23 @@ from django import forms
 from product.models import *
 
 
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=50, label="Benutzername:")
+    password = forms.CharField(widget=forms.PasswordInput, label="Passwort:")
+
+
+class RegisterForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["username", "first_name", "last_name", "email", "password"]
+
+    username = forms.CharField(max_length=50, label="Benutzername:")
+    first_name = forms.CharField(max_length=50, label="Vorname:")
+    last_name = forms.CharField(max_length=50, label="Nachname:")
+    email = forms.EmailField(label="Email:")
+    password = forms.CharField(widget=forms.PasswordInput, label="Passwort:")
+
+
 class ChoicePollForm(forms.ModelForm):
     class Meta:
         model = ChoicePoll
@@ -27,8 +44,8 @@ class ChoicePollForm(forms.ModelForm):
     show_result = forms.BooleanField(required=False, label="Ergebnis anzeigen:")
     logged_in_only = forms.BooleanField(required=False, label="Nur für angemeldete Nutzer:")
     # type-specific options
-    multiple_choice_allowed = forms.BooleanField(required=False, label="Mehrfachauswahl möglich:")
-    custom_answers_allowed = forms.BooleanField(required=False, label="Eigene Antworten erlauben:")
+    multiple_choice_allowed = forms.BooleanField(required=False, label="Mehrfachauswahl:")
+    custom_answers_allowed = forms.BooleanField(required=False, label="Eigene Antworten erlaubt:")
     # voting items; the first 2 are required
     item_1 = forms.CharField(max_length=50, label="Antwort:")
     item_2 = forms.CharField(max_length=50, label="Antwort:")
@@ -84,8 +101,8 @@ class DateTimePollForm(forms.ModelForm):
         ("DAT", "Datum"),
         ("UHR", "Uhrzeit"),
         ("D&U", "Datum & Uhrzeit"),
-    ), initial="D&U")
-    multiple_choice_allowed = forms.BooleanField(required=False, label="Mehrfachauswahl möglich:")
+    ), initial="D&U", label="Modus:")
+    multiple_choice_allowed = forms.BooleanField(required=False, label="Mehrfachauswahl:")
     # voting items; the first 2 are required
     item_1 = DateTimeLocalField(label="Antwort:")
     item_2 = DateTimeLocalField(label="Antwort:")
@@ -160,8 +177,8 @@ class RankingPollForm(forms.ModelForm):
     show_result = forms.BooleanField(required=False, label="Ergebnis anzeigen:")
     logged_in_only = forms.BooleanField(required=False, label="Nur für angemeldete Nutzer:")
     # type-specific options
-    criteria_good = forms.CharField(max_length=50, label="Kriterium: Gut", initial="gut")
-    criteria_bad = forms.CharField(max_length=50, label="Kriterium: Schlecht", initial="schlecht")
+    criteria_good = forms.CharField(max_length=50, label="von:", initial="gut")
+    criteria_bad = forms.CharField(max_length=50, label="bis:", initial="schlecht")
     # voting items; the first 2 are required
     item_1 = forms.ImageField(label="Antwort:")
     item_2 = forms.ImageField(label="Antwort:")

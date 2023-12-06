@@ -1,10 +1,11 @@
 import datetime
 from itertools import chain
 
+from django.contrib import auth
 from django.shortcuts import render, redirect
 from django.utils.timezone import now, timedelta
 
-from product.forms import ChoicePollForm, DateTimePollForm, TierlistPollForm, RankingPollForm
+from product.forms import ChoicePollForm, DateTimePollForm, TierlistPollForm, RankingPollForm, LoginForm
 from product.models import User, ChoiceObject, DateTimeObject, TierlistObject, RankingObject
 
 
@@ -28,8 +29,26 @@ def home(request):
 
 
 def login(request):
-    return render(request, "base.html", {
+    # redirect to profile if user is already logged in
+    if request.user.is_authenticated:
+        return redirect("profile")
+    form = LoginForm()
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password")
+            # authenticate credentials
+            account = auth.authenticate(request, username=username, password=password)
+            if account is not None:
+                # log user in and redirect to profile
+                auth.login(request, account)
+                return redirect("profile")
+            else:
+                form.add_error("username", "Ungültige Logindaten. Bitte erneut probieren.")
+    return render(request, "login.html", {
         "title": "Login",
+        "form": form,
     })
 
 
