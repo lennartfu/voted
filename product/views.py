@@ -76,12 +76,10 @@ def register(request):
 
 
 def profile(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
     # get user
     user = User.objects.get(id=request.session.get("user_id"))
-    from django.contrib.auth.models import User as DjangoUser
-    account = DjangoUser.objects.get(id=1)
-    if not user.account:
-        redirect("login")
     # get all created polls
     choice_polls = user.product_choicepolls_created.all()
     datetime_polls = user.product_datetimepolls_created.all()
@@ -98,7 +96,7 @@ def profile(request):
     num_votes = len(list(chain(choice_polls, datetime_polls, tierlist_polls, ranking_polls)))
     return render(request, "profile.html", {
         "title": "Profil",
-        "user": account,
+        "user": request.user,
         "num_created": num_created,
         "num_votes": num_votes,
         "favorite": "Tierlist",

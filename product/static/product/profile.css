@@ -7,6 +7,10 @@
     margin-top: 80px;
 }
 
+.profile-icon path {
+    stroke: #DCCAE9;
+}
+
 .username {
     margin-top: 10px;
     text-transform: capitalize;
@@ -50,40 +54,6 @@
 .seperator {
     border-left: 2px solid #220A35;
     margin: 0 10px;
-}
-
-.edit, .logout {
-    background-color: #9356A0;
-    color: white;
-    margin-top: 30px;
-    width: 120px;
-}
-
-.btn:hover{
-    color: white;
-    background-color: #482c75;
-    transition: ease-in 0.15s;
-    border-color: #220A35;
-
-}
-
-.profile-buttons {
-    justify-content: center;
-}
-
-.edit {
-    margin-right: 15px;
-}
-
-.logout {
-    margin-left: 15px;
-}
-
-.delete {
-    background-color: #E13B4C;
-    margin: 20px;
-    width: 180px;
-    color: white;
 }
 
 .achievements-container {
