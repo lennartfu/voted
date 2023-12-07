@@ -18,7 +18,7 @@ class RegisterForm(UserCreationForm):
     first_name = forms.CharField(max_length=50, label="Vorname:")
     last_name = forms.CharField(max_length=50, label="Nachname:")
     email = forms.EmailField(label="Email:")
-    password1 = forms.CharField(widget=forms.PasswordInput, label="Neues Passwort:")
+    password1 = forms.CharField(widget=forms.PasswordInput, label="Passwort:")
     password2 = forms.CharField(widget=forms.PasswordInput, label="Passwort bestätigen:")
 
 
@@ -31,7 +31,7 @@ class UserForm(forms.ModelForm):
     last_name = forms.CharField(required=False, disabled=True, max_length=50, label="Nachname:")
     username = forms.CharField(max_length=50, label="Benutzername:")
     email = forms.EmailField(label="Email:")
-    password1 = forms.CharField(required=False, widget=forms.PasswordInput, label="Passwort:")
+    password1 = forms.CharField(required=False, widget=forms.PasswordInput, label="Neues Passwort:")
     password2 = forms.CharField(required=False, widget=forms.PasswordInput, label="Passwort bestätigen:")
 
 

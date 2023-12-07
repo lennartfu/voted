@@ -110,6 +110,11 @@ def profile_edit(request):
     return render(request, "profile_edit.html", {
         "title": "Profil bearbeiten",
         "form": form,
+        "user": request.user,
+        "num_created": 195,
+        "num_votes": 245,
+        "favorite": "Tierlist",
+
     })
 
 
