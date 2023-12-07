@@ -1,11 +1,10 @@
-import datetime
 from itertools import chain
 
 from django.contrib import auth
 from django.shortcuts import render, redirect
 from django.utils.timezone import now, timedelta
 
-from product.forms import ChoicePollForm, DateTimePollForm, TierlistPollForm, RankingPollForm, LoginForm, RegisterForm
+from product.forms import *
 from product.models import User, ChoiceObject, DateTimeObject, TierlistObject, RankingObject
 
 
@@ -83,8 +82,39 @@ def profile(request):
 
 
 def profile_edit(request):
-    return render(request, "base.html", {
+    if not request.user.is_authenticated:
+        return redirect("login")
+    form = UserForm(instance=request.user)
+    if request.method == "POST":
+        form = UserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            account = form.save(commit=False)
+            password1 = form.cleaned_data.get("password1")
+            password2 = form.cleaned_data.get("password2")
+            # check if user wants to change password
+            if not (password1 or password2):
+                # save changes and redirect
+                account.save()
+                return redirect("profile")
+            # check if passwords match
+            if password1 == password2:
+                # change password
+                account.set_password(password1)
+                account.save()
+                # log user in and redirect to profile
+                auth.login(request, account)
+                return redirect("profile")
+            else:
+                # save error message to form
+                form.add_error("password2", "The two password fields didn’t match.")
+    return render(request, "profile_edit.html", {
         "title": "Profil bearbeiten",
+        "form": form,
+        "user": request.user,
+        "num_created": 195,
+        "num_votes": 245,
+        "favorite": "Tierlist",
+
     })
 
 

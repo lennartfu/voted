@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 from product.models import *
 
@@ -20,6 +20,19 @@ class RegisterForm(UserCreationForm):
     email = forms.EmailField(label="Email:")
     password1 = forms.CharField(widget=forms.PasswordInput, label="Passwort:")
     password2 = forms.CharField(widget=forms.PasswordInput, label="Passwort bestätigen:")
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = DjangoUser
+        fields = ["first_name", "last_name", "username", "email"]
+
+    first_name = forms.CharField(required=False, disabled=True, max_length=50, label="Vorname:")
+    last_name = forms.CharField(required=False, disabled=True, max_length=50, label="Nachname:")
+    username = forms.CharField(max_length=50, label="Benutzername:")
+    email = forms.EmailField(label="Email:")
+    password1 = forms.CharField(required=False, widget=forms.PasswordInput, label="Neues Passwort:")
+    password2 = forms.CharField(required=False, widget=forms.PasswordInput, label="Passwort bestätigen:")
 
 
 class ChoicePollForm(forms.ModelForm):
