@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static "product/forms.css" %}">
+  <link rel="stylesheet" href="{% static "product/register.css" %}">
+{% endblock %}
+{% block body %}
+  <div class="container my-5">
+    <div class="row min-vh-80 d-flex align-items-center">
+
+      <div class="col-6">
+        <div class="row">
+          <h1 class="text-start">Du bist kurz davor, Teil von etwas ganz Großem zu werden!</h1>
+          <h2 class="text-start mt-5">Deine Vorteile mit einem Voted-Account:</h2>
+          <ul class="feature-list mt-3 ms-3">
+            <li>Statistiken und Achievements</li>
+            <li>Erweiterte Einstellungen bei Abstimmungen</li>
+            <li>Automatisch wiederkehrende Umfragen</li>
+            <li>Freunde hinzufügen</li>
+            <li>Gruppen erstellen</li>
+            <li>Finde heraus, was noch alles möglich ist...</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <h2>Registrierung:</h2>
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="row">
+
+            <div class="col-12 mt-4">
+              {{ form.username.errors }}
+              <div class="input-group input-group-lg">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
+              {{ form.first_name.errors }}
+              <div class="input-group input-group-lg">
+                {{ form.first_name.label_tag }}
+                {{ form.first_name }}
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
+              {{ form.last_name.errors }}
+              <div class="input-group input-group-lg">
+                {{ form.last_name.label_tag }}
+                {{ form.last_name }}
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
+              {{ form.email.errors }}
+              <div class="input-group input-group-lg">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
+              {{ form.password1.errors }}
+              <div class="input-group input-group-lg">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
+              {{ form.password2.errors }}
+              <div class="input-group input-group-lg">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row justify-content-center mt-4">
+            <button class="btn btn-large btn-submit px-5 py-2" type="submit">Account erstellen</button>
+          </div>
+
+          <div class="row mt-4">
+            <a class="text-center" href="{% url "login" %}">Du hast bereits einen Account? Hier geht's zum Login.</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src={% static "product/forms.js" %}></script>
+{% endblock %}

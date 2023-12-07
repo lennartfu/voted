@@ -1,15 +1,11 @@
-for (let el of document.querySelectorAll("input")) {
-    el.classList.add("form-control");
-}
-for (let el of document.querySelectorAll("textarea")) {
-    el.classList.add("form-control");
-    el.rows = 2;
-}
-for (let el of document.querySelectorAll("select")) {
-    el.classList.add("form-select");
-}
-for (let el of document.querySelectorAll("input[type=checkbox]")) {
-    el.classList.remove("form-control");
-    el.classList.add("form-check-input");
-    el.classList.add("mt-0");
-}
+$(document).ready(function() {
+    $("textarea").addClass("form-control").attr("rows", 2);
+
+    $("select").addClass("form-select");
+
+    $("input").addClass("form-control");
+
+    $("input[type=checkbox]").removeClass("form-control").addClass("form-check-input mt-0");
+
+    $("label").addClass("input-group-text px-3");
+});

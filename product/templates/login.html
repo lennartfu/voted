@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static "product/forms.css" %}">
+  <link rel="stylesheet" href="{% static "product/login.css" %}">
+{% endblock %}
+{% block body %}
+  <div class="container mt-5">
+    <div class="row min-vh-80 d-flex align-items-center">
+
+      <div class="col-6">
+        <div class="row">
+          <h1 class="text-start">Danke für dein Vertrauen! Mit uns kannst du alles schaffen!</h1>
+          <h2 class="text-start mt-5">Deine Vorteile mit einem Voted-Account:</h2>
+          <ul class="feature-list mt-3 ms-3">
+            <li>Statistiken und Achievements</li>
+            <li>Erweiterte Einstellungen bei Abstimmungen</li>
+            <li>Automatisch wiederkehrende Umfragen</li>
+            <li>Freunde hinzufügen</li>
+            <li>Gruppen erstellen</li>
+            <li>Finde heraus, was noch alles möglich ist...</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <h2>Anmelden:</h2>
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="row">
+
+            <div class="col-12 mt-4">
+              {{ form.username.errors }}
+              <div class="input-group input-group-lg">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
+              {{ form.password.errors }}
+              <div class="input-group input-group-lg">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row justify-content-center mt-4">
+            <button class="btn btn-large btn-submit px-5 py-2" type="submit">Login</button>
+          </div>
+
+          <div class="row mt-4">
+            <a class="text-center" href="{% url "register" %}">Du hast noch keinen Account? Hier geht's zur Registrierung.</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src={% static "product/forms.js" %}></script>
+{% endblock %}

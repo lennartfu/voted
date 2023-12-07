@@ -19,7 +19,7 @@ def generate_unique_code():
 
 
 def object_directory_path(instance, filename):
-    return f"voted/objects/{instance.poll.code}/{filename}"
+    return f"product/media/objects/{instance.poll.code}/{filename}"
 
 
 class User(models.Model):
@@ -103,6 +103,7 @@ class TierlistObject(models.Model):
 class RankingObject(models.Model):
     poll = models.ForeignKey(RankingPoll, on_delete=models.CASCADE, related_name="vote_objects")
     value = models.CharField(max_length=50)
+    image = models.ImageField(upload_to=object_directory_path)
 
 
 # Vote base model

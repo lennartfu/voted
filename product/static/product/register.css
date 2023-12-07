@@ -1,0 +1,16 @@
+.min-vh-80 {
+    min-height: 80vh;
+}
+
+.feature-list {
+    list-style-position: inside;
+}
+
+.feature-list li {
+    color: white;
+    font-size: 1.5rem;
+}
+
+a {
+    color: #DCCAE9;
+}
