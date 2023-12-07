@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 
 from product.models import *
 
@@ -8,16 +9,17 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput, label="Passwort:")
 
 
-class RegisterForm(forms.ModelForm):
+class RegisterForm(UserCreationForm):
     class Meta:
-        model = User
-        fields = ["username", "first_name", "last_name", "email", "password"]
+        model = DjangoUser
+        fields = ["username", "first_name", "last_name", "email", "password1", "password2"]
 
     username = forms.CharField(max_length=50, label="Benutzername:")
     first_name = forms.CharField(max_length=50, label="Vorname:")
     last_name = forms.CharField(max_length=50, label="Nachname:")
     email = forms.EmailField(label="Email:")
-    password = forms.CharField(widget=forms.PasswordInput, label="Passwort:")
+    password1 = forms.CharField(widget=forms.PasswordInput, label="Passwort:")
+    password2 = forms.CharField(widget=forms.PasswordInput, label="Passwort bestätigen:")
 
 
 class ChoicePollForm(forms.ModelForm):
