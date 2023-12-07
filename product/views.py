@@ -4,7 +4,7 @@ from django.contrib import auth
 from django.shortcuts import render, redirect
 from django.utils.timezone import now, timedelta
 
-from product.forms import ChoicePollForm, DateTimePollForm, TierlistPollForm, RankingPollForm, LoginForm, UserForm
+from product.forms import *
 from product.models import User, ChoiceObject, DateTimeObject, TierlistObject, RankingObject
 
 
@@ -52,8 +52,26 @@ def login(request):
 
 
 def register(request):
-    return render(request, "base.html", {
+    # redirect to profile if user is already logged in
+    if request.user.is_authenticated:
+        return redirect("profile")
+    # get user
+    user = User.objects.get(id=request.session.get("user_id"))
+    form = RegisterForm()
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            # create account
+            account = form.save()
+            # add account to existing user
+            user.account = account
+            user.save()
+            # log user in and redirect to profile
+            auth.login(request, account)
+            return redirect("profile")
+    return render(request, "register.html", {
         "title": "Registrierung",
+        "form": form,
     })
 
 
