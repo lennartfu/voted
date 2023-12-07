@@ -6,11 +6,11 @@
 {% endblock %}
 {% block body %}
   <div class="container my-5">
-    <div class="row d-flex align-items-center">
+    <div class="row min-vh-80 d-flex align-items-center">
 
       <div class="col-6">
         <div class="row">
-          <h1>Du bist kurz davor, Teil von etwas ganz Großem zu werden!</h1>
+          <h1 class="text-start">Du bist kurz davor, Teil von etwas ganz Großem zu werden!</h1>
           <h2 class="text-start mt-5">Deine Vorteile mit einem Voted-Account:</h2>
           <ul class="feature-list mt-3 ms-3">
             <li>Statistiken und Achievements</li>
@@ -31,6 +31,14 @@
           <div class="row">
 
             <div class="col-12 mt-4">
+              {{ form.username.errors }}
+              <div class="input-group input-group-lg">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+              </div>
+            </div>
+
+            <div class="col-12 mt-4">
               {{ form.first_name.errors }}
               <div class="input-group input-group-lg">
                 {{ form.first_name.label_tag }}
@@ -43,14 +51,6 @@
               <div class="input-group input-group-lg">
                 {{ form.last_name.label_tag }}
                 {{ form.last_name }}
-              </div>
-            </div>
-
-            <div class="col-12 mt-4">
-              {{ form.username.errors }}
-              <div class="input-group input-group-lg">
-                {{ form.username.label_tag }}
-                {{ form.username }}
               </div>
             </div>
 

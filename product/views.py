@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.utils.timezone import now, timedelta
 
 from product.forms import *
-from product.models import User, ChoiceObject, DateTimeObject, TierlistObject, RankingObject
+from product.models import *
 
 
 def home(request):
@@ -114,7 +114,6 @@ def profile_edit(request):
         "num_created": 195,
         "num_votes": 245,
         "favorite": "Tierlist",
-
     })
 
 
