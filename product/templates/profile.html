@@ -1,13 +1,86 @@
 {% extends "base.html" %}
 {% load static %}
 {% block css %}
-  <link rel="stylesheet" href="{% static "product/profile.css" %}">
+    <link rel="stylesheet" href="{% static "product/profile.css" %}">
 {% endblock %}
 {% block body %}
-	<div class="container">
-      <h1 style="color:white">{{ user.username }}</h1>
-      <h1 style="color:white">{{ num_created }}</h1>
-      <h1 style="color:white">{{ num_votes }}</h1>
-      <h1 style="color:white">{{ favorite }}</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <div class="profile-container">
+                    <svg class="profile-icon" width="250" height="250" viewBox="-10 -10 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Fortschrittskreis (Vollkreis) -->
+                        <circle class="circle-full" cx="75" stroke="rgba(114, 76, 157, 0.5)" stroke-width="20"  cy="75" r="70" fill="none"/>
+
+                        <!-- Fortschrittskreis (Teilkreis) - Progress sollte wert zwischen 0 und 440 haben-->
+                        <circle cx="75" cy="75" r="70" stroke="#724C9D" stroke-width="20" fill="none"
+                                stroke-dasharray="{{ progress }} 440"
+                                transform="rotate(-90 75 75)" />
+
+                        <!-- Pfad für das bestehende Profil-Symbol -->
+                        <path d="M33.2268 121.49C37.0289 112.533 45.9058 106.25 56.25 106.25H93.75C104.094 106.25 112.971 112.533 116.773 121.49M100 59.375C100 73.1821 88.8071 84.375 75 84.375C61.1929 84.375 50 73.1821 50 59.375C50 45.5679 61.1929 34.375 75 34.375C88.8071 34.375 100 45.5679 100 59.375ZM137.5 75C137.5 109.518 109.518 137.5 75 137.5C40.4822 137.5 12.5 109.518 12.5 75C12.5 40.4822 40.4822 12.5 75 12.5C109.518 12.5 137.5 40.4822 137.5 75Z"
+                              stroke="black" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+
+                    <h1 class="username" >{{ user.username }}</h1>
+                    <h3 class="clearname">{{ user.first_name }} {{ user.last_name }}</h3>
+                    <h3 class="email">{{ user.email }}</h3>
+                    <div class="stats">
+                        <h1 class="stat" >{{ num_created }}
+                            <sub class="stat-type">Erstellt</sub>
+                        </h1>
+                        <span class="seperator"></span>
+                        <h1 class="stat" >{{ favorite }} <sub class="stat-type">Favorit</sub></h1>
+                        <span class="seperator"></span>
+                        <h1 class="stat" >{{ num_votes }} <sub class="stat-type">Votes</sub></h1>
+
+                    </div>
+                    <div class="row profile-buttons">
+                        <div class="edit col-6 btn">Bearbeiten</div>
+                        <div class="logout col-6 btn">Ausloggen</div>
+                    </div>
+                    <div class="row profile-buttons">
+                        <div class="delete btn">Account löschen</div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-6">
+                <div class="achievements-container">
+                    <div class="row">
+                        <h2 class="user-level col-12">{{ user.level }} LEVEL 1</h2>
+                    </div>
+                    <div class="row">
+                        <h2 class="achievement">Votes <sub class="achievement-description">Deine vergebenen Votes</sub></h2>
+
+                        <div class="progress-bar">
+                            <div class="progress-container">
+                                <div class="progress" style="width: 80%"></div>
+                                <div class="progress-text">Level {{ user.votes_level }} 4</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h2 class="achievement">Votings <sub class="achievement-description">Deine erstellten Votings</sub></h2>
+                    </div>
+                    <div class="row">
+                        <h2 class="achievement">Tierlists <sub class="achievement-description">Deine erstellten Tierlists</sub></h2>
+                    </div>
+                    <div class="row">
+                        <h2 class="achievement">Abstimmungen <sub class="achievement-description">Deine erstellten Abstimmungen</sub></h2>
+                    </div>
+                    <div class="row">
+                        <h2 class="achievement">Termine <sub class="achievement-description">Deine erstellten Termin</sub></h2>
+                    </div>
+                    <div class="row">
+                        <h2 class="achievement">Ranglist <sub class="achievement-description">Deine erstellten Ranglisten</sub></h2>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
     </div>
 {% endblock %}
