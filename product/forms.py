@@ -205,3 +205,14 @@ class RankingPollForm(forms.ModelForm):
         # add extra item fields
         for i in range(2, max_items):
             self.fields[f"item_{i + 1}"] = forms.ImageField(required=False, label=f"Antwort:")
+
+
+class ChoiceVoteForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        # get vote objects
+        vote_objects = kwargs.pop("vote_objects", None)
+        super(ChoiceVoteForm, self).__init__(*args, **kwargs)
+        self.label_suffix = ""
+        # add vote object fields
+        for o in vote_objects:
+            self.fields[f"object_{o.id}"] = forms.BooleanField(required=False, label=o.value)

@@ -1,0 +1,8 @@
+.timer {
+    color: #DCCAE9;
+    text-align: center;
+}
+
+.input-group label {
+    min-width: 20vw;
+}

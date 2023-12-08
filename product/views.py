@@ -218,8 +218,24 @@ def vote_create_ranking(request):
 
 
 def vote_code(request, code):
-    return render(request, "base.html", {
+    if poll := ChoicePoll.objects.filter(code=code).first():
+        vote_objects = ChoiceObject.objects.filter(poll=poll)
+        form = ChoiceVoteForm(vote_objects=vote_objects)
+        if request.method == "POST":
+            form = ChoiceVoteForm(request.POST, vote_objects=vote_objects)
+            if form.is_valid():
+                # create object to store vote data
+                vote_data = {}
+                for field_name, field_value in form.cleaned_data.items():
+                    if field_name.startswith("object_"):
+                        vote_data[field_name.split("_")[1]] = field_value
+                print(vote_data)
+                # create a vote object
+                vote = ChoiceVote(poll=poll, data=vote_data).save()
+    return render(request, "vote_code.html", {
         "title": "Abstimmung",
+        "form": form,
+        "poll": poll,
     })
 
 
