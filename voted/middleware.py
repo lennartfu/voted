@@ -12,7 +12,12 @@ class UserIDMiddleware(MiddlewareMixin):
     """
 
     def process_request(self, request):
-        if not request.session.get("user_id"):
+        if request.user.is_authenticated:
+            # get existing user
+            user = User.objects.get(account_id=request.user.id)
+            # add user id to session data
+            request.session["user_id"] = str(user.id)
+        elif not request.session.get("user_id"):
             # create user
             user = User.objects.create()
             # add user id to session data
