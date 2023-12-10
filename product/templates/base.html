@@ -39,8 +39,11 @@
           <a class="nav-link" href="{% url 'vote_create_choice' %}">Neue Abstimmung</a>
         </li>
       </ul>
-      <form class="d-flex nav-form me-auto">
-        <input class="form-control nav-input px-0 me-2" type="tel" minlength="5" maxlength="5"
+      <form action="{% url 'home' %}" method="POST" class="d-flex nav-form me-auto">
+        {% csrf_token %}
+        <label class="d-none" for="code"></label>
+        <input class="form-control nav-input px-0 me-2" id="code" name="code" type="tel" minlength="5" maxlength="5"
+               required
                placeholder="Code eingeben...">
         <button class="btn nav-btn px-4" type="submit">Los</button>
       </form>
@@ -49,7 +52,11 @@
           <a class="nav-link" href="{% url 'log' %}">Meine Abstimmungen</a>
         </li>
         <li class="nav-item px-1">
-          <a class="nav-link" href="{% url 'login' %}">Login</a>
+          {% if is_authenticated %}
+            <a href="{% url 'profile' %}" class="nav-link">Mein Profil</a>
+          {% else %}
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          {% endif %}
         </li>
       </ul>
     </div>

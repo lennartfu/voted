@@ -50,9 +50,9 @@ class ChoicePollForm(forms.ModelForm):
 
     # basic fields
     title = forms.CharField(max_length=50, label="Titel:")
-    description = forms.CharField(required=False, widget=forms.Textarea, label="Beschreibung:")
+    description = forms.CharField(required=False, max_length=500, widget=forms.Textarea, label="Beschreibung:")
     password = forms.CharField(required=False, label="Passwort:")
-    days = forms.IntegerField(required=False, min_value=0, max_value=65, label="Tage:")
+    days = forms.IntegerField(required=False, min_value=0, max_value=365, label="Tage:")
     hours = forms.IntegerField(required=False, min_value=0, max_value=24, label="Stunden:")
     minutes = forms.IntegerField(required=False, min_value=0, max_value=60, label="Minuten:")
     # extra options
@@ -103,9 +103,9 @@ class DateTimePollForm(forms.ModelForm):
 
     # basic fields
     title = forms.CharField(max_length=50, label="Titel:")
-    description = forms.CharField(required=False, widget=forms.Textarea, label="Beschreibung:")
+    description = forms.CharField(required=False, max_length=500, widget=forms.Textarea, label="Beschreibung:")
     password = forms.CharField(required=False, label="Passwort:")
-    days = forms.IntegerField(required=False, min_value=0, max_value=65, label="Tage:")
+    days = forms.IntegerField(required=False, min_value=0, max_value=365, label="Tage:")
     hours = forms.IntegerField(required=False, min_value=0, max_value=24, label="Stunden:")
     minutes = forms.IntegerField(required=False, min_value=0, max_value=60, label="Minuten:")
     # extra options
@@ -145,9 +145,9 @@ class TierlistPollForm(forms.ModelForm):
 
     # basic fields
     title = forms.CharField(max_length=50, label="Titel:")
-    description = forms.CharField(required=False, widget=forms.Textarea, label="Beschreibung:")
+    description = forms.CharField(required=False, max_length=500, widget=forms.Textarea, label="Beschreibung:")
     password = forms.CharField(required=False, label="Passwort:")
-    days = forms.IntegerField(required=False, min_value=0, max_value=65, label="Tage:")
+    days = forms.IntegerField(required=False, min_value=0, max_value=365, label="Tage:")
     hours = forms.IntegerField(required=False, min_value=0, max_value=24, label="Stunden:")
     minutes = forms.IntegerField(required=False, min_value=0, max_value=60, label="Minuten:")
     # extra options
@@ -183,9 +183,9 @@ class RankingPollForm(forms.ModelForm):
 
     # Basic fields
     title = forms.CharField(max_length=50, label="Titel:")
-    description = forms.CharField(required=False, widget=forms.Textarea, label="Beschreibung:")
+    description = forms.CharField(required=False, max_length=500, widget=forms.Textarea, label="Beschreibung:")
     password = forms.CharField(required=False, label="Passwort:")
-    days = forms.IntegerField(required=False, min_value=0, max_value=65, label="Tage:")
+    days = forms.IntegerField(required=False, min_value=0, max_value=365, label="Tage:")
     hours = forms.IntegerField(required=False, min_value=0, max_value=24, label="Stunden:")
     minutes = forms.IntegerField(required=False, min_value=0, max_value=60, label="Minuten:")
     # extra options
@@ -214,5 +214,18 @@ class ChoiceVoteForm(forms.Form):
         super(ChoiceVoteForm, self).__init__(*args, **kwargs)
         self.label_suffix = ""
         # add vote object fields
-        for o in vote_objects:
-            self.fields[f"object_{o.id}"] = forms.BooleanField(required=False, label=o.value)
+        if vote_objects:
+            for o in vote_objects:
+                self.fields[f"object_{o.id}"] = forms.BooleanField(required=False, label=o.value)
+
+
+class DateTimeVoteForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        # get vote objects
+        vote_objects = kwargs.pop("vote_objects", None)
+        super(DateTimeVoteForm, self).__init__(*args, **kwargs)
+        self.label_suffix = ""
+        # add vote object fields
+        if vote_objects:
+            for o in vote_objects:
+                self.fields[f"object_{o.id}"] = forms.BooleanField(required=False, label=o.value)

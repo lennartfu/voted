@@ -65,8 +65,8 @@
             <div class="col-3">
               <a href="{% url "vote_code" poll.code %}" class="poll-window-link">
                 <div class="poll-window choice d-flex flex-column">
-                  <h3>{{ poll.title }}</h3>
-                  <p class="mb-0">{{ poll.description }}</p>
+                  <h3 class="overflow-hidden">{{ poll.title|truncatechars:15 }}</h3>
+                  <p class="overflow-hidden word-wrap mb-0">{{ poll.description|truncatechars:90 }}</p>
                   {#                <svg class="icon-2" width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">#}
                   {#                  <path d="M10.25 13.6667H10.267M10.25 27.3333H10.267M10.25 20.5H30.75M10.25 20.5C6.47601 20.5 3.41663 17.4406 3.41663 13.6667C3.41663 9.89273 6.47601 6.83334 10.25 6.83334H30.75C34.5239 6.83334 37.5833 9.89273 37.5833 13.6667C37.5833 17.4406 34.5239 20.5 30.75 20.5M10.25 20.5C6.47601 20.5 3.41663 23.5594 3.41663 27.3333C3.41663 31.1073 6.47601 34.1667 10.25 34.1667H30.75C34.5239 34.1667 37.5833 31.1073 37.5833 27.3333C37.5833 23.5594 34.5239 20.5 30.75 20.5" stroke="black" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>#}
                   {#                </svg>#}

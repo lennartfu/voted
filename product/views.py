@@ -9,19 +9,23 @@ from product.models import *
 
 
 def home(request):
+    if request.method == "POST":
+        if code := request.POST.get("code"):
+            return redirect("vote_code", code)
     # get user
     user = User.objects.get(id=request.session.get("user_id"))
-    # for each poll type, get the 4 latest polls the user participated in
-    choice_polls = user.product_choicepolls_participated.all().order_by("-timestamp_created")
-    datetime_polls = user.product_datetimepolls_participated.all().order_by("-timestamp_created")
-    tierlist_polls = user.product_tierlistpolls_participated.all().order_by("-timestamp_created")
-    ranking_polls = user.product_rankingpolls_participated.all().order_by("-timestamp_created")
+    # for each poll type, get the 4 latest polls the user viewed
+    choice_polls = ChoicePoll.objects.filter(viewers__id=user.id)[::-1][:4]
+    datetime_polls = DateTimePoll.objects.filter(viewers__id=user.id)[::-1][:4]
+    tierlist_polls = TierlistPoll.objects.filter(viewers__id=user.id)[::-1][:4]
+    ranking_polls = RankingPoll.objects.filter(viewers__id=user.id)[::-1][:4]
     # create a list with all 16 polls
     polls = list(chain(choice_polls, datetime_polls, tierlist_polls, ranking_polls))
     # sort polls
     sorted_polls = sorted(polls, key=lambda poll: poll.timestamp_created, reverse=True)[:4]
     return render(request, "home.html", {
         "title": "Home",
+        "is_authenticated": request.user.is_authenticated,
         "user": user,
         "polls": sorted_polls,
     })
@@ -47,8 +51,15 @@ def login(request):
                 form.add_error("username", "Ungültige Logindaten. Bitte erneut probieren.")
     return render(request, "login.html", {
         "title": "Login",
+        "is_authenticated": request.user.is_authenticated,
         "form": form,
     })
+
+
+def logout(request):
+    if request.user.is_authenticated:
+        auth.logout(request)
+    return redirect("home")
 
 
 def register(request):
@@ -71,6 +82,7 @@ def register(request):
             return redirect("profile")
     return render(request, "register.html", {
         "title": "Registrierung",
+        "is_authenticated": request.user.is_authenticated,
         "form": form,
     })
 
@@ -78,6 +90,7 @@ def register(request):
 def profile(request):
     return render(request, "base.html", {
         "title": "Profil",
+        "is_authenticated": request.user.is_authenticated,
     })
 
 
@@ -109,6 +122,7 @@ def profile_edit(request):
                 form.add_error("password2", "The two password fields didn’t match.")
     return render(request, "profile_edit.html", {
         "title": "Profil bearbeiten",
+        "is_authenticated": request.user.is_authenticated,
         "form": form,
         "user": request.user,
         "num_created": 195,
@@ -120,6 +134,7 @@ def profile_edit(request):
 def settings(request):
     return render(request, "base.html", {
         "title": "Einstellungen",
+        "is_authenticated": request.user.is_authenticated,
     })
 
 
@@ -135,7 +150,6 @@ def save_poll(user, form):
         poll.timestamp_end = now() + timedelta(days=days, hours=hours, minutes=minutes)
     # save poll to database
     poll.save()
-    poll.participants.add(user)
     return poll
 
 
@@ -153,6 +167,7 @@ def vote_create_choice(request):
             return redirect("vote_code", poll.code)
     return render(request, "vote_create_choice.html", {
         "title": "Neue Umfrage",
+        "is_authenticated": request.user.is_authenticated,
         "user": user,
         "form": form,
     })
@@ -172,6 +187,7 @@ def vote_create_date(request):
             return redirect("vote_code", poll.code)
     return render(request, "vote_create_datetime.html", {
         "title": "Neue Terminabstimmung",
+        "is_authenticated": request.user.is_authenticated,
         "user": user,
         "form": form,
     })
@@ -192,6 +208,7 @@ def vote_create_tierlist(request):
             return redirect("vote_code", poll.code)
     return render(request, "vote_create_tierlist.html", {
         "title": "Neue Tierlist",
+        "is_authenticated": request.user.is_authenticated,
         "user": user,
         "form": form,
     })
@@ -212,34 +229,74 @@ def vote_create_ranking(request):
             return redirect("vote_code", poll.code)
     return render(request, "vote_create_ranking.html", {
         "title": "Neue Rangliste",
+        "is_authenticated": request.user.is_authenticated,
         "user": user,
         "form": form,
     })
 
 
 def vote_code(request, code):
+    user = User.objects.get(id=request.session.get("user_id"))
+    show_form = True
+    # handle ChoicePoll
     if poll := ChoicePoll.objects.filter(code=code).first():
-        vote_objects = ChoiceObject.objects.filter(poll=poll)
-        form = ChoiceVoteForm(vote_objects=vote_objects)
-        if request.method == "POST":
-            form = ChoiceVoteForm(request.POST, vote_objects=vote_objects)
-            if form.is_valid():
-                # create object to store vote data
-                vote_data = {}
-                for field_name, field_value in form.cleaned_data.items():
-                    if field_name.startswith("object_"):
-                        vote_data[field_name.split("_")[1]] = field_value
-                print(vote_data)
-                # create a vote object
-                vote = ChoiceVote(poll=poll, data=vote_data).save()
+        poll.viewers.remove(user)
+        poll.viewers.add(user)
+        form = ChoiceVoteForm()
+        # check if user has already submitted a vote for this poll
+        if ChoiceVote.objects.filter(poll=poll, user_id=user.id).exists():
+            show_form = False
+        else:
+            vote_objects = ChoiceObject.objects.filter(poll=poll)
+            form = ChoiceVoteForm(vote_objects=vote_objects)
+            if request.method == "POST":
+                form = ChoiceVoteForm(request.POST, vote_objects=vote_objects)
+                if form.is_valid():
+                    # create object to store vote data
+                    vote_data = {}
+                    for field_name, field_value in form.cleaned_data.items():
+                        if field_name.startswith("object_"):
+                            # add object to vote data
+                            object_id = int(field_name.split("_")[1])
+                            vote_data[object_id] = field_value
+                    # create a vote object
+                    ChoiceVote(poll=poll, user_id=user.id, data=vote_data).save()
+                    show_form = False
+    # handle DateTimePoll
+    if poll := DateTimePoll.objects.filter(code=code).first():
+        poll.viewers.remove(user)
+        poll.viewers.add(user)
+        form = DateTimeVoteForm()
+        # check if user has already submitted a vote for this poll
+        if DateTimeVote.objects.filter(poll=poll, user_id=user.id).exists():
+            show_form = False
+        else:
+            vote_objects = DateTimeObject.objects.filter(poll=poll)
+            form = DateTimeVoteForm(vote_objects=vote_objects)
+            if request.method == "POST":
+                form = DateTimeVoteForm(request.POST, vote_objects=vote_objects)
+                if form.is_valid():
+                    # create object to store vote data
+                    vote_data = {}
+                    for field_name, field_value in form.cleaned_data.items():
+                        if field_name.startswith("object_"):
+                            # add object to vote data
+                            object_id = int(field_name.split("_")[1])
+                            vote_data[object_id] = field_value
+                    # create a vote object
+                    DateTimeVote(poll=poll, user_id=user.id, data=vote_data).save()
+                    show_form = False
     return render(request, "vote_code.html", {
-        "title": "Abstimmung",
+        "title": poll.title,
+        "is_authenticated": request.user.is_authenticated,
         "form": form,
         "poll": poll,
+        "show_form": show_form,
     })
 
 
 def log(request):
     return render(request, "base.html", {
         "title": "Meine Abstimmungen",
+        "is_authenticated": request.user.is_authenticated,
     })

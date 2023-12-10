@@ -36,7 +36,7 @@ class Poll(models.Model):
     is_active = models.BooleanField(default=True)
     code = models.CharField(max_length=5, default=generate_unique_code, editable=False)
     title = models.CharField(max_length=50)
-    description = models.TextField(blank=True)
+    description = models.TextField(max_length=500, blank=True)
     password = models.CharField(max_length=50, blank=True)
     # timestamps
     timestamp_created = models.DateTimeField(auto_now_add=True)
@@ -51,6 +51,11 @@ class Poll(models.Model):
         User,
         blank=True,
         related_name="%(app_label)s_%(class)ss_participated"  # reverse example: user.product_choicepolls_participated
+    )
+    viewers = models.ManyToManyField(
+        User,
+        blank=True,
+        related_name="%(app_label)s_%(class)ss_viewed",  # reverse example: user.product_choicepolls_viewed
     )
     # extra options
     show_result = models.BooleanField(default=False)

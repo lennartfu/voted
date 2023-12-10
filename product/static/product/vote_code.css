@@ -1,8 +1,32 @@
 .timer {
-    color: #DCCAE9;
+    color: #9C85DC;
     text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.description {
+    color: white;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.submit-message {
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.submit-message p {
+    color: #FFF;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
 }
 
 .input-group label {
-    min-width: 20vw;
+    min-width: 500px;
 }
