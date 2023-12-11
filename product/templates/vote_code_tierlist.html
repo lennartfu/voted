@@ -1,0 +1,78 @@
+{% extends "vote_code.html" %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static "product/forms.css" %}">
+  <link rel="stylesheet" href="{% static "product/vote_code.css" %}">
+  <link rel="stylesheet" href="{% static "product/vote_code_tierlist.css" %}">
+{% endblock %}
+{% block form %}
+  <div class="tierlist mt-3 px-0">
+    {% if poll.num_tiers >= 1 %}
+      <div class="tier-row first">
+        <div id="S" class="tier-label">S</div>
+        <div class="tier-content">
+
+        </div>
+      </div>
+    {% endif %}
+    {% if poll.num_tiers >= 2 %}
+      <div class="tier-row">
+        <div id="A" class="tier-label">A</div>
+        <div class="tier-content">
+
+        </div>
+      </div>
+    {% endif %}
+    {% if poll.num_tiers >= 3 %}
+      <div class="tier-row">
+        <div id="B" class="tier-label">B</div>
+        <div class="tier-content">
+
+        </div>
+      </div>
+    {% endif %}
+    {% if poll.num_tiers >= 4 %}
+      <div class="tier-row">
+        <div id="C" class="tier-label">C</div>
+        <div class="tier-content">
+
+        </div>
+      </div>
+    {% endif %}
+    {% if poll.num_tiers >= 5 %}
+      <div class="tier-row">
+        <div id="D" class="tier-label">D</div>
+        <div class="tier-content">
+
+        </div>
+      </div>
+    {% endif %}
+    {% if poll.num_tiers >= 6 %}
+      <div class="tier-row">
+        <div id="F" class="tier-label">F</div>
+        <div class="tier-content">
+
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  <div class="tier-content last px-0 mt-3 mt-sm-5">
+    {% for option in voting_options %}
+      <img id="{{ option.id }}" src="{{ option.image.url }}" class="tier-item" title="{{ option.text }}"
+           alt="{{ option.text }}">
+    {% endfor %}
+  </div>
+
+  <div class="row justify-content-center mt-4">
+    <button class="btn btn-large btn-submit px-5 py-2" type="submit">Absenden</button>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script type="text/javascript">
+      let multiple_choice_allowed = "{{ poll.multiple_choice_allowed }}";
+      let countDownDate = new Date("{{ poll.timestamp_end|escapejs }}").getTime();
+  </script>
+  <script src="{% static "product/forms.js" %}"></script>
+  <script src="{% static "product/vote_code.js" %}"></script>
+  <script src="{% static "product/vote_code_tierlist.js" %}"></script>
+{% endblock %}

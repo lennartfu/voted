@@ -1,0 +1,29 @@
+.btn-submit {
+    width: auto;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background-color: #220A35;
+    color: #DCCAE9;
+    border: 3px solid #DCCAE9;
+    border-radius: 1vmin;
+}
+
+.btn-submit:hover {
+    background-color: #DCCAE9;
+    color: #220A35;
+}
+
+.btn-delete {
+    width: auto;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background-color: #220A35;
+    color: #C90000;
+    border: 3px solid #C90000;
+    border-radius: 1vmin;
+}
+
+.btn-delete:hover {
+    background-color: #C90000;
+    color: #220A35;
+}

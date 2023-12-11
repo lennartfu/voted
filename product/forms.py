@@ -1,5 +1,7 @@
+import locale
+
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm
 
 from product.models import *
 
@@ -35,10 +37,11 @@ class UserForm(forms.ModelForm):
     password2 = forms.CharField(required=False, widget=forms.PasswordInput, label="Passwort bestätigen:")
 
 
-class ChoicePollForm(forms.ModelForm):
+class PollForm(forms.ModelForm):
     class Meta:
-        model = ChoicePoll
+        model = Poll
         fields = [
+            "poll_type",
             "title",
             "description",
             "password",
@@ -46,162 +49,80 @@ class ChoicePollForm(forms.ModelForm):
             "logged_in_only",
             "multiple_choice_allowed",
             "custom_answers_allowed",
-        ]
-
-    # basic fields
-    title = forms.CharField(max_length=50, label="Titel:")
-    description = forms.CharField(required=False, widget=forms.Textarea, label="Beschreibung:")
-    password = forms.CharField(required=False, label="Passwort:")
-    days = forms.IntegerField(required=False, min_value=0, max_value=65, label="Tage:")
-    hours = forms.IntegerField(required=False, min_value=0, max_value=24, label="Stunden:")
-    minutes = forms.IntegerField(required=False, min_value=0, max_value=60, label="Minuten:")
-    # extra options
-    show_result = forms.BooleanField(required=False, label="Ergebnis anzeigen:")
-    logged_in_only = forms.BooleanField(required=False, label="Nur für angemeldete Nutzer:")
-    # type-specific options
-    multiple_choice_allowed = forms.BooleanField(required=False, label="Mehrfachauswahl:")
-    custom_answers_allowed = forms.BooleanField(required=False, label="Eigene Antworten erlaubt:")
-    # voting items; the first 2 are required
-    item_1 = forms.CharField(max_length=50, label="Antwort:")
-    item_2 = forms.CharField(max_length=50, label="Antwort:")
-
-    def __init__(self, *args, **kwargs):
-        # the maximum number of items a user can add to this poll; defaults to 10
-        max_items = kwargs.pop("max_items", 20)
-        super(ChoicePollForm, self).__init__(*args, **kwargs)
-        # add extra item fields
-        for i in range(2, max_items):
-            self.fields[f"item_{i + 1}"] = forms.CharField(required=False, max_length=50,
-                                                           label=f"Antwort:")
-
-
-class DateTimeLocalInput(forms.DateTimeInput):
-    input_type = "datetime-local"
-
-
-class DateTimeLocalField(forms.DateTimeField):
-    input_formats = [
-        "%Y-%m-%dT%H:%M:%S",
-        "%Y-%m-%dT%H:%M:%S.%f",
-        "%Y-%m-%dT%H:%M"
-    ]
-    widget = DateTimeLocalInput(format="%Y-%m-%dT%H:%M")
-
-
-class DateTimePollForm(forms.ModelForm):
-    class Meta:
-        model = DateTimePoll
-        fields = [
-            "title",
-            "description",
-            "password",
-            "show_result",
-            "logged_in_only",
-            "mode",
-            "multiple_choice_allowed",
-        ]
-
-    # basic fields
-    title = forms.CharField(max_length=50, label="Titel:")
-    description = forms.CharField(required=False, widget=forms.Textarea, label="Beschreibung:")
-    password = forms.CharField(required=False, label="Passwort:")
-    days = forms.IntegerField(required=False, min_value=0, max_value=65, label="Tage:")
-    hours = forms.IntegerField(required=False, min_value=0, max_value=24, label="Stunden:")
-    minutes = forms.IntegerField(required=False, min_value=0, max_value=60, label="Minuten:")
-    # extra options
-    show_result = forms.BooleanField(required=False, label="Ergebnis anzeigen:")
-    logged_in_only = forms.BooleanField(required=False, label="Nur für angemeldete Nutzer:")
-    # type-specific options
-    mode = forms.ChoiceField(choices=(
-        ("DAT", "Datum"),
-        ("UHR", "Uhrzeit"),
-        ("D&U", "Datum & Uhrzeit"),
-    ), initial="D&U", label="Modus:")
-    multiple_choice_allowed = forms.BooleanField(required=False, label="Mehrfachauswahl:")
-    # voting items; the first 2 are required
-    item_1 = DateTimeLocalField(label="Antwort:")
-    item_2 = DateTimeLocalField(label="Antwort:")
-
-    def __init__(self, *args, **kwargs):
-        # the maximum number of items a user can add to this poll; defaults to 10
-        max_items = kwargs.pop("max_items", 20)
-        super(DateTimePollForm, self).__init__(*args, **kwargs)
-        # add extra item fields
-        for i in range(2, max_items):
-            self.fields[f"item_{i + 1}"] = DateTimeLocalField(required=False, label=f"Antwort:")
-
-
-class TierlistPollForm(forms.ModelForm):
-    class Meta:
-        model = TierlistPoll
-        fields = [
-            "title",
-            "description",
-            "password",
-            "show_result",
-            "logged_in_only",
+            "date_mode",
             "num_tiers",
-        ]
-
-    # basic fields
-    title = forms.CharField(max_length=50, label="Titel:")
-    description = forms.CharField(required=False, widget=forms.Textarea, label="Beschreibung:")
-    password = forms.CharField(required=False, label="Passwort:")
-    days = forms.IntegerField(required=False, min_value=0, max_value=65, label="Tage:")
-    hours = forms.IntegerField(required=False, min_value=0, max_value=24, label="Stunden:")
-    minutes = forms.IntegerField(required=False, min_value=0, max_value=60, label="Minuten:")
-    # extra options
-    show_result = forms.BooleanField(required=False, label="Ergebnis anzeigen:")
-    logged_in_only = forms.BooleanField(required=False, label="Nur für angemeldete Nutzer:")
-    # type-specific options
-    num_tiers = forms.IntegerField(label="Tiers:", min_value=2, max_value=6, step_size=1, initial=6)
-    # voting items; the first 2 are required
-    item_1 = forms.ImageField(label="Antwort:")
-    item_2 = forms.ImageField(label="Antwort:")
-
-    def __init__(self, *args, **kwargs):
-        # the maximum number of items a user can add to this poll; defaults to 10
-        max_items = kwargs.pop("max_items", 20)
-        super(TierlistPollForm, self).__init__(*args, **kwargs)
-        # add extra item fields
-        for i in range(2, max_items):
-            self.fields[f"item_{i + 1}"] = forms.ImageField(required=False, label=f"Antwort:")
-
-
-class RankingPollForm(forms.ModelForm):
-    class Meta:
-        model = RankingPoll
-        fields = [
-            "title",
-            "description",
-            "password",
-            "show_result",
-            "logged_in_only",
             "criteria_good",
             "criteria_bad",
         ]
 
-    # Basic fields
+    # poll type
+    TYPE_CHOICES = (
+        ("POLL", "Umfrage"),
+        ("DATE", "Terminabstimmung"),
+        ("TIER", "Tierlist"),
+        ("RANK", "Rangliste"),
+    )
+    poll_type = forms.ChoiceField(choices=TYPE_CHOICES)
+    # basic attributes
     title = forms.CharField(max_length=50, label="Titel:")
-    description = forms.CharField(required=False, widget=forms.Textarea, label="Beschreibung:")
+    description = forms.CharField(required=False, max_length=500, widget=forms.Textarea, label="Beschreibung:")
     password = forms.CharField(required=False, label="Passwort:")
-    days = forms.IntegerField(required=False, min_value=0, max_value=65, label="Tage:")
+    days = forms.IntegerField(required=False, min_value=0, max_value=365, label="Tage:")
     hours = forms.IntegerField(required=False, min_value=0, max_value=24, label="Stunden:")
     minutes = forms.IntegerField(required=False, min_value=0, max_value=60, label="Minuten:")
     # extra options
     show_result = forms.BooleanField(required=False, label="Ergebnis anzeigen:")
     logged_in_only = forms.BooleanField(required=False, label="Nur für angemeldete Nutzer:")
-    # type-specific options
-    criteria_good = forms.CharField(max_length=50, label="von:", initial="gut")
-    criteria_bad = forms.CharField(max_length=50, label="bis:", initial="schlecht")
-    # voting items; the first 2 are required
-    item_1 = forms.ImageField(label="Antwort:")
-    item_2 = forms.ImageField(label="Antwort:")
+    multiple_choice_allowed = forms.BooleanField(required=False, label="Mehrfachauswahl:")
+    custom_answers_allowed = forms.BooleanField(required=False, label="Eigene Antworten erlaubt:")
+    # date poll options
+    DATE_MODE_CHOICES = (
+        ("DATE", "Datum"),
+        ("TIME", "Uhrzeit"),
+        ("BOTH", "Datum & Uhrzeit"),
+    )
+    date_mode = forms.ChoiceField(required=False, choices=DATE_MODE_CHOICES, initial="DATE", label="Modus:")
+    # tierlist poll options
+    num_tiers = forms.IntegerField(required=False, min_value=2, max_value=6, initial=6, label="Tiers:")
+    # ranking poll options
+    criteria_good = forms.CharField(required=False, max_length=50, label="von:", initial="gut")
+    criteria_bad = forms.CharField(required=False, max_length=50, label="bis:", initial="schlecht")
 
     def __init__(self, *args, **kwargs):
-        # the maximum number of items a user can add to this poll; defaults to 10
-        max_items = kwargs.pop("max_items", 20)
-        super(RankingPollForm, self).__init__(*args, **kwargs)
-        # add extra item fields
-        for i in range(2, max_items):
-            self.fields[f"item_{i + 1}"] = forms.ImageField(required=False, label=f"Antwort:")
+        # the maximum number of voting options a user can add to this poll; defaults to 20
+        max_options = kwargs.pop("max_options", 20)
+        super(PollForm, self).__init__(*args, **kwargs)
+        # for each option, add text, date, time and image fields
+        for i in range(max_options):
+            self.fields[f"option_{i + 1}_text"] = forms.CharField(required=False, max_length=50, label=f"Text:")
+            self.fields[f"option_{i + 1}_date"] = forms.DateField(required=False, label=f"Datum:", localize=True)
+            self.fields[f"option_{i + 1}_time"] = forms.TimeField(required=False, label=f"Uhrzeit:", localize=True)
+            self.fields[f"option_{i + 1}_image"] = forms.ImageField(required=False, label=f"Bild:")
+
+
+class VotingForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        poll_type = kwargs.pop("poll_type", "POLL")
+        # get voting options
+        voting_options = kwargs.pop("voting_options", ())
+        super(VotingForm, self).__init__(*args, **kwargs)
+        self.label_suffix = ""
+        # for each option, add a boolean field
+        locale.setlocale(locale.LC_ALL, "de_DE")
+        for o in voting_options:
+            if poll_type == "POLL":
+                self.fields[f"option_{o.id}"] = forms.BooleanField(required=False, label=o.text)
+            if poll_type == "DATE":
+                label = f"{o.date.strftime('%A, %d. %B %Y')}"
+                self.fields[f"option_{o.id}"] = forms.BooleanField(required=False, label=label)
+            if poll_type == "TIME":
+                label = f"{o.time.strftime('%H:%M')} Uhr"
+                self.fields[f"option_{o.id}"] = forms.BooleanField(required=False, label=label)
+            if poll_type == "BOTH":
+                label = f"{o.date.strftime('%A, %d.%m.%Y')} um {o.time.strftime('%H:%M')} Uhr"
+                self.fields[f"option_{o.id}"] = forms.BooleanField(required=False, label=label)
+            if poll_type == "TIER":
+                self.fields[f"option_{o.id}"] = forms.BooleanField(required=False, label=o.image)
+            if poll_type == "RANK":
+                self.fields[f"option_{o.id}"] = forms.BooleanField(required=False, label=o.text)
+        locale.setlocale(locale.LC_ALL, "en_US")

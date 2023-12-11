@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +15,8 @@
   <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Outfit:wght@500;600;700&display=swap"
       rel="stylesheet">
+  {# jQueryUI CSS #}
+  <link rel="stylesheet" href="{% static "jqueryui/jquery-ui.min.css" %}">
   {# Bootstrap CSS #}
   <link rel="stylesheet" href="{% static "bootstrap/bootstrap.min.css" %}">
   {# Base CSS #}
@@ -39,8 +41,11 @@
           <a class="nav-link" href="{% url 'vote_create_choice' %}">Neue Abstimmung</a>
         </li>
       </ul>
-      <form class="d-flex nav-form me-auto">
-        <input class="form-control nav-input px-0 me-2" type="tel" minlength="5" maxlength="5"
+      <form action="{% url 'home' %}" method="POST" class="d-flex nav-form me-auto">
+        {% csrf_token %}
+        <label class="d-none" for="code"></label>
+        <input class="form-control nav-input px-0 me-2" id="code" name="code" type="tel" minlength="5" maxlength="5"
+               required
                placeholder="Code eingeben...">
         <button class="btn nav-btn px-4" type="submit">Los</button>
       </form>
@@ -49,7 +54,11 @@
           <a class="nav-link" href="{% url 'log' %}">Meine Abstimmungen</a>
         </li>
         <li class="nav-item px-1">
-          <a class="nav-link" href="{% url 'login' %}">Login</a>
+          {% if is_authenticated %}
+            <a href="{% url 'profile' %}" class="nav-link">Mein Profil</a>
+          {% else %}
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          {% endif %}
         </li>
       </ul>
     </div>
@@ -59,6 +68,8 @@
 {% block body %}{% endblock %}
 {# jQuery #}
 <script src="{% static "jquery/jquery-3.7.1.min.js" %}"></script>
+{# jQueryUI #}
+<script src="{% static "jqueryui/jquery-ui.min.js" %}"></script>
 {# Bootstrap #}
 <script src="{% static "bootstrap/bootstrap.bundle.min.js" %}"></script>
 {# Other scripts #}

@@ -1,12 +1,13 @@
 {% extends "vote_create.html" %}
+{% load product_extras %}
 {% block extra_options %}
   <div class="row justify-content-between mt-4">
 
     <div class="col-auto">
-      {{ form.mode.errors }}
+      {{ form.date_mode.errors }}
       <div class="input-group input-group-lg">
-        {{ form.mode.label_tag }}
-        {{ form.mode }}
+        {{ form.date_mode.label_tag }}
+        {{ form.date_mode }}
       </div>
     </div>
 
@@ -40,5 +41,25 @@
       </div>
     </div>
 
+  </div>
+{% endblock %}
+{% block voting_options %}
+  <div class="row">
+    {% for field in form.visible_fields %}
+      {% if "option_" in field.name and "_date" in field.name %}
+        <div
+            class="col-6 mt-4 {% if "_1_" in field.name or "_2_" in field.name %}visible{% else %}initial-hidden{% endif %}">
+          {{ field.errors }}
+          <div class="input-group input-group-lg">
+            <label for="id_{{ field.name|trim_option }}_date">Datum:</label>
+            <input type="date" name="{{ field.name|trim_option }}_date" id="id_{{ field.name|trim_option }}_date"
+                   {% if "_1_" in field.name or "_2_" in field.name %}required{% endif %}>
+            <label for="id_{{ field.name|trim_option }}_time">Uhrzeit:</label>
+            <input type="time" name="{{ field.name|trim_option }}_time" id="id_{{ field.name|trim_option }}_time"
+                   {% if "_1_" in field.name or "_2_" in field.name %}required{% endif %}>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
   </div>
 {% endblock %}

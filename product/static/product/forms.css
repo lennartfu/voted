@@ -11,7 +11,7 @@ li {
 
 .input-group * {
     border: none;
-    border-radius: 1000px;
+    /*border-radius: 1000px;*/
 }
 
 .input-group-text {

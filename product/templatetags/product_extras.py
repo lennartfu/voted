@@ -5,9 +5,17 @@ register = template.Library()
 
 
 @register.filter
+def trim_option(field_name):
+    split = field_name.split("_")
+    return split[0] + "_" + split[1]
+
+
+@register.filter
 def time_status(timestamp):
+    if not timestamp:
+        return "🔴 Aktiv"
     if timestamp < now():
-        return "Beendet"
+        return "❌ Beendet"
     diff = timestamp - now()
     days = diff.days
     hours, remainder = divmod(diff.seconds, 3600)

@@ -53,7 +53,8 @@
           </div>
 
           <div class="row mt-4">
-            <a class="text-center" href="{% url "register" %}">Du hast noch keinen Account? Hier geht's zur Registrierung.</a>
+            <a class="text-center" href="{% url "register" %}">Du hast noch keinen Account? Hier geht's zur
+              Registrierung.</a>
           </div>
         </form>
       </div>
@@ -62,5 +63,5 @@
   </div>
 {% endblock %}
 {% block scripts %}
-  <script src={% static "product/forms.js" %}></script>
+  <script src="{% static "product/forms.js" %}"></script>
 {% endblock %}
