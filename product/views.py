@@ -79,38 +79,44 @@ def register(request):
     })
 
 
+def get_stats(user):
+    # get all created polls
+    created_polls = user.polls_created.all()
+    # get amount of created polls
+    num_created = len(created_polls)
+    # get amount of participations in polls
+    num_votes = len(user.polls_participated.all())
+    # get favorite poll type
+    poll_types = [("POLL", "Umfrage"), ("DATE", "Termin"), ("TIER", "Tierlist"), ("RANK", "Rangliste")]
+    num_created_by_type = [len(created_polls.filter(poll_type=poll_type[0])) for poll_type in poll_types]
+    index = num_created_by_type.index(max(num_created_by_type))
+    favorite = poll_types[index][1]
+    return num_created, num_votes, favorite
+
+
 def profile(request):
     if not request.user.is_authenticated:
         return redirect("login")
-    # get user
     user = User.objects.get(id=request.session.get("user_id"))
-    # get all created polls
-    choice_polls = user.product_choicepolls_created.all()
-    datetime_polls = user.product_datetimepolls_created.all()
-    tierlist_polls = user.product_tierlistpolls_created.all()
-    ranking_polls = user.product_rankingpolls_created.all()
-    # get number of created polls
-    num_created = len(list(chain(choice_polls, datetime_polls, tierlist_polls, ranking_polls)))
-    # get all participated polls
-    choice_polls = user.product_choicepolls_participated.all()
-    datetime_polls = user.product_datetimepolls_participated.all()
-    tierlist_polls = user.product_tierlistpolls_participated.all()
-    ranking_polls = user.product_rankingpolls_participated.all()
-    # get number of votes
-    num_votes = len(list(chain(choice_polls, datetime_polls, tierlist_polls, ranking_polls)))
+    # get stats
+    num_created, num_votes, favorite = get_stats(user)
+    # TODO: Achievements
     return render(request, "profile.html", {
         "title": "Profil",
         "is_authenticated": request.user.is_authenticated,
         "user": request.user,
         "num_created": num_created,
         "num_votes": num_votes,
-        "favorite": "Tierlist",
+        "favorite": favorite,
     })
 
 
 def profile_edit(request):
     if not request.user.is_authenticated:
         return redirect("login")
+    user = User.objects.get(id=request.session.get('user_id'))
+    # get stats
+    num_created, num_votes, favorite = get_stats(user)
     form = UserForm(instance=request.user)
     if request.method == "POST":
         form = UserForm(request.POST, instance=request.user)
@@ -139,9 +145,9 @@ def profile_edit(request):
         "is_authenticated": request.user.is_authenticated,
         "form": form,
         "user": request.user,
-        "num_created": 195,
-        "num_votes": 245,
-        "favorite": "Tierlist",
+        "num_created": num_created,
+        "num_votes": num_votes,
+        "favorite": favorite,
     })
 
 
