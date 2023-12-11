@@ -101,7 +101,7 @@ def profile(request):
     # get stats
     num_created, num_votes, favorite = get_stats(user)
     # TODO: Achievements
-    return render(request, "profile.html", {
+    return render(request, "profile_view.html", {
         "title": "Profil",
         "is_authenticated": request.user.is_authenticated,
         "user": request.user,

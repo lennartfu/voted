@@ -1,0 +1,89 @@
+{% extends "profile.html" %}
+{% block col_right %}
+  <div class="col-6">
+    <div class="achievements-container">
+      
+      <div class="row">
+        <h2 class="user-level col-12">{{ user.level }} LEVEL 1</h2>
+      </div>
+      
+      <div class="row">
+        <h2 class="achievement">Votes <sub class="achievement-description">Deine vergebenen Votes</sub>
+          <span class="achievement-count">450</span>
+        </h2>
+        <div class="progress-bar">
+          <div class="progress-container">
+            <div class="progress" style="width: 90%"></div>
+            <div class="progress-text">Level {{ user.votes_level }} 4</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <h2 class="achievement">Votings <sub class="achievement-description">Deine erstellten
+          Votings</sub>
+          <span class="achievement-count">201</span>
+        </h2>
+        <div class="progress-bar">
+          <div class="progress-container">
+            <div class="progress" style="width: 80%"></div>
+            <div class="progress-text">Level {{ user.votings_level }} 1</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <h2 class="achievement">Tierlists <sub class="achievement-description">Deine erstellten
+          Tierlists</sub>
+          <span class="achievement-count">1</span>
+        </h2>
+        <div class="progress-bar">
+          <div class="progress-container">
+            <div class="progress" style="width: 60%"></div>
+            <div class="progress-text">Level {{ user.votings_level }} 2</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <h2 class="achievement">Abstimmungen <sub class="achievement-description">Deine erstellten
+          Abstimmungen</sub>
+          <span class="achievement-count">41</span>
+        </h2>
+        <div class="progress-bar">
+          <div class="progress-container">
+            <div class="progress" style="width: 70%"></div>
+            <div class="progress-text">Level {{ user.votings_level }} 8</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <h2 class="achievement">Termine <sub class="achievement-description">Deine erstellten
+          Termin</sub>
+          <span class="achievement-count">23</span>
+        </h2>
+        <div class="progress-bar">
+          <div class="progress-container">
+            <div class="progress" style="width: 10%"></div>
+            <div class="progress-text">Level {{ user.votings_level }} 2</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="row">
+        <h2 class="achievement">Ranglist <sub class="achievement-description">Deine erstellten
+          Ranglisten</sub>
+          <span class="achievement-count">2</span>
+        </h2>
+        <div class="progress-bar">
+          <div class="progress-container">
+            <div class="progress" style="width: 30%"></div>
+            <div class="progress-text">Level {{ user.votings_level }} 9</div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+{% endblock %}
