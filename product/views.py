@@ -80,9 +80,31 @@ def register(request):
 
 
 def profile(request):
-    return render(request, "base.html", {
+    if not request.user.is_authenticated:
+        return redirect("login")
+    # get user
+    user = User.objects.get(id=request.session.get("user_id"))
+    # get all created polls
+    choice_polls = user.product_choicepolls_created.all()
+    datetime_polls = user.product_datetimepolls_created.all()
+    tierlist_polls = user.product_tierlistpolls_created.all()
+    ranking_polls = user.product_rankingpolls_created.all()
+    # get number of created polls
+    num_created = len(list(chain(choice_polls, datetime_polls, tierlist_polls, ranking_polls)))
+    # get all participated polls
+    choice_polls = user.product_choicepolls_participated.all()
+    datetime_polls = user.product_datetimepolls_participated.all()
+    tierlist_polls = user.product_tierlistpolls_participated.all()
+    ranking_polls = user.product_rankingpolls_participated.all()
+    # get number of votes
+    num_votes = len(list(chain(choice_polls, datetime_polls, tierlist_polls, ranking_polls)))
+    return render(request, "profile.html", {
         "title": "Profil",
         "is_authenticated": request.user.is_authenticated,
+        "user": request.user,
+        "num_created": num_created,
+        "num_votes": num_votes,
+        "favorite": "Tierlist",
     })
 
 
