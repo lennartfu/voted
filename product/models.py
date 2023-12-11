@@ -4,22 +4,21 @@ import shortuuid
 from django.contrib.auth.models import User as DjangoUser
 from django.db import models
 
+from voted.settings import MEDIA_ROOT
+
 
 def generate_unique_code():
     # generate a 5 digit code
     shortuuid.set_alphabet("0123456789")
     code = shortuuid.uuid()[:5]
     # make sure the code doesn't exist yet
-    while (ChoicePoll.objects.filter(code=code).exists() or
-           DateTimePoll.objects.filter(code=code).exists() or
-           TierlistPoll.objects.filter(code=code).exists() or
-           RankingPoll.objects.filter(code=code).exists()):
+    while Poll.objects.filter(code=code).exists():
         code = shortuuid.uuid()[:5]
     return code
 
 
-def object_directory_path(instance, filename):
-    return f"product/media/objects/{instance.poll.code}/{filename}"
+def option_directory_path(instance, filename):
+    return MEDIA_ROOT / f"voting_options/{instance.poll.code}/{filename}"
 
 
 class User(models.Model):
@@ -27,11 +26,15 @@ class User(models.Model):
     account = models.OneToOneField(DjangoUser, blank=True, null=True, on_delete=models.CASCADE)
 
 
-# Poll base model
 class Poll(models.Model):
-    class Meta:
-        abstract = True
-
+    # poll type
+    TYPE_CHOICES = (
+        ("POLL", "Umfrage"),
+        ("DATE", "Terminabstimmung"),
+        ("TIER", "Tierlist"),
+        ("RANK", "Rangliste"),
+    )
+    poll_type = models.CharField(max_length=4, choices=TYPE_CHOICES)
     # basic attributes
     is_active = models.BooleanField(default=True)
     code = models.CharField(max_length=5, default=generate_unique_code, editable=False)
@@ -41,103 +44,64 @@ class Poll(models.Model):
     # timestamps
     timestamp_created = models.DateTimeField(auto_now_add=True)
     timestamp_end = models.DateTimeField(blank=True, null=True)
+    timestamp_changed = models.DateTimeField(auto_now=True)
     # associated users
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="%(app_label)s_%(class)ss_created"  # reverse example: user.product_choicepolls_created
+        related_name="polls_created",
     )
     participants = models.ManyToManyField(
         User,
         blank=True,
-        related_name="%(app_label)s_%(class)ss_participated"  # reverse example: user.product_choicepolls_participated
+        related_name="polls_participated",
     )
     viewers = models.ManyToManyField(
         User,
         blank=True,
-        related_name="%(app_label)s_%(class)ss_viewed",  # reverse example: user.product_choicepolls_viewed
+        related_name="polls_viewed",
+        through="PollView",
     )
     # extra options
     show_result = models.BooleanField(default=False)
     logged_in_only = models.BooleanField(default=False)
-
-
-# Poll models
-class ChoicePoll(Poll):
     multiple_choice_allowed = models.BooleanField(default=False)
     custom_answers_allowed = models.BooleanField(default=False)
-
-
-class DateTimePoll(Poll):
-    MODE_CHOICES = (
-        ("DAT", "Datum"),
-        ("UHR", "Uhrzeit"),
-        ("D&U", "Datum & Uhrzeit"),
+    # date poll options
+    DATE_MODE_CHOICES = (
+        ("DATE", "Datum"),
+        ("TIME", "Uhrzeit"),
+        ("BOTH", "Datum & Uhrzeit"),
     )
-    mode = models.CharField(max_length=3, choices=MODE_CHOICES)
-    multiple_choice_allowed = models.BooleanField(default=False)
-    custom_answers_allowed = models.BooleanField(default=False)
+    date_mode = models.CharField(blank=True, null=True, max_length=4, choices=DATE_MODE_CHOICES)
+    # tierlist poll options
+    num_tiers = models.PositiveSmallIntegerField(blank=True, null=True)
+    # ranking poll options
+    criteria_good = models.CharField(blank=True, null=True, max_length=50)
+    criteria_bad = models.CharField(blank=True, null=True, max_length=50)
 
 
-class TierlistPoll(Poll):
-    num_tiers = models.PositiveSmallIntegerField()
+class PollView(models.Model):
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    last_updated = models.DateTimeField(auto_now=True)
 
 
-class RankingPoll(Poll):
-    criteria_good = models.CharField(max_length=50, default="gut")
-    criteria_bad = models.CharField(max_length=50, default="schlecht")
+class VotingOption(models.Model):
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE, related_name="voting_options")
+    text = models.CharField(blank=True, null=True, max_length=50)
+    date = models.DateField(blank=True, null=True)
+    time = models.TimeField(blank=True, null=True)
+    image = models.ImageField(blank=True, null=True, upload_to=option_directory_path)
 
 
-# Object models
-class ChoiceObject(models.Model):
-    poll = models.ForeignKey(ChoicePoll, on_delete=models.CASCADE, related_name="vote_objects")
-    value = models.CharField(max_length=50)
-
-
-class DateTimeObject(models.Model):
-    poll = models.ForeignKey(DateTimePoll, on_delete=models.CASCADE, related_name="vote_objects")
-    value = models.DateTimeField()
-
-
-class TierlistObject(models.Model):
-    poll = models.ForeignKey(TierlistPoll, on_delete=models.CASCADE, related_name="vote_objects")
-    value = models.CharField(max_length=50)
-    image = models.ImageField(upload_to=object_directory_path)
-
-
-class RankingObject(models.Model):
-    poll = models.ForeignKey(RankingPoll, on_delete=models.CASCADE, related_name="vote_objects")
-    value = models.CharField(max_length=50)
-    image = models.ImageField(upload_to=object_directory_path)
-
-
-# Vote base model
-class VoteModel(models.Model):
-    class Meta:
-        abstract = True
-
+class Vote(models.Model):
+    poll = models.ForeignKey(Poll, on_delete=models.CASCADE, related_name="votes")
     user = models.ForeignKey(
         User,
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
-        related_name="%(app_label)s_%(class)ss")  # reverse example: user.product_choicevotes
+        related_name="votes")
     data = models.JSONField()
     last_updated = models.DateTimeField(auto_now=True)
-
-
-# Vote models
-class ChoiceVote(VoteModel):
-    poll = models.ForeignKey(ChoicePoll, on_delete=models.CASCADE, related_name="votes")
-
-
-class DateTimeVote(VoteModel):
-    poll = models.ForeignKey(DateTimePoll, on_delete=models.CASCADE, related_name="votes")
-
-
-class TierlistVote(VoteModel):
-    poll = models.ForeignKey(TierlistPoll, on_delete=models.CASCADE, related_name="votes")
-
-
-class RankingVote(VoteModel):
-    poll = models.ForeignKey(RankingPoll, on_delete=models.CASCADE, related_name="votes")

@@ -28,5 +28,7 @@
 }
 
 .input-group label {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
     min-width: 500px;
 }

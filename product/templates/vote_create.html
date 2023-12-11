@@ -6,14 +6,15 @@
   <link rel="stylesheet" href="{% static "product/vote_create.css" %}">
 {% endblock %}
 {% block body %}
-  <div class="container mt-5">
+  <div class="container my-5">
     <div class="new-voting-section">
       <h1>Neue Abstimmung erstellen:</h1>
+
       <div class="row mt-4">
         <div class="col-3">
           <a href="{% url "vote_create_choice" %}" class="poll-window-link">
             <div
-                class="poll-window poll-window-new choice {% if title == "Neue Umfrage" %}poll-window-selected{% endif %}">
+                class="poll-window poll-window-new choice {% if poll_type == "POLL" %}poll-window-selected{% endif %}">
               <h3 class="mb-0">Umfrage</h3>
             </div>
           </a>
@@ -21,7 +22,7 @@
         <div class="col-3">
           <a href="{% url "vote_create_date" %}" class="poll-window-link">
             <div
-                class="poll-window poll-window-new date {% if title == "Neue Terminabstimmung" %}poll-window-selected{% endif %}">
+                class="poll-window poll-window-new date {% if poll_type == "DATE" %}poll-window-selected{% endif %}">
               <h3 class="mb-0">Termin</h3>
             </div>
           </a>
@@ -29,7 +30,7 @@
         <div class="col-3">
           <a href="{% url "vote_create_tierlist" %}" class="poll-window-link">
             <div
-                class="poll-window poll-window-new tierlist {% if title == "Neue Tierlist" %}poll-window-selected{% endif %}">
+                class="poll-window poll-window-new tierlist {% if poll_type == "TIER" %}poll-window-selected{% endif %}">
               <h3 class="mb-0">Tierlist</h3>
             </div>
           </a>
@@ -37,7 +38,7 @@
         <div class="col-3">
           <a href="{% url "vote_create_ranking" %}" class="poll-window-link">
             <div
-                class="poll-window poll-window-new ranking {% if title == "Neue Rangliste" %}poll-window-selected{% endif %}">
+                class="poll-window poll-window-new ranking {% if poll_type == "RANK" %}poll-window-selected{% endif %}">
               <h3 class="mb-0">Rangliste</h3>
             </div>
           </a>
@@ -47,6 +48,13 @@
 
     <form enctype="multipart/form-data" class="mt-4" method="POST">
       {% csrf_token %}
+
+      <select class="d-none" name="{{ form.poll_type.name }}" id="id_{{ form.poll_type.name }}">
+        <option value="POLL" {% if poll_type == "POLL" %}selected{% endif %}>Umfrage</option>
+        <option value="DATE" {% if poll_type == "DATE" %}selected{% endif %}>Terminabstimmung</option>
+        <option value="TIER" {% if poll_type == "TIER" %}selected{% endif %}>Tierlist</option>
+        <option value="RANK" {% if poll_type == "RANK" %}selected{% endif %}>Rangliste</option>
+      </select>
 
       <h2 class="mt-4">Einstellungen:</h2>
 
@@ -106,19 +114,7 @@
 
       <h2 class="mt-4">Antwortmöglichkeiten:</h2>
 
-      <div class="row">
-        {% for field in form.visible_fields %}
-          {% if "item_" in field.name %}
-            <div class="col-6 mt-4 {% if field.name == "item_1" or field.name == "item_2"%}visible{% else %}initial-hidden{% endif %}">
-              {{ field.errors }}
-              <div class="input-group input-group-lg">
-                {{ field.label_tag }}
-                {{ field }}
-              </div>
-            </div>
-          {% endif %}
-        {% endfor %}
-      </div>
+      {% block voting_options %}{% endblock %}
 
       <div class="row justify-content-center mt-4">
         <button class="btn btn-large btn-submit px-5 py-2" type="submit">Erstellen</button>
@@ -128,6 +124,6 @@
   </div>
 {% endblock %}
 {% block scripts %}
-  <script src={% static "product/forms.js" %}></script>
-  <script src={% static "product/vote_create.js" %}></script>
+  <script src="{% static "product/forms.js" %}"></script>
+  <script src="{% static "product/vote_create.js" %}"></script>
 {% endblock %}

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $("textarea").addClass("form-control").attr("rows", 2);
 
     $("select").addClass("form-select");

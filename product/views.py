@@ -1,5 +1,3 @@
-from itertools import chain
-
 from django.contrib import auth
 from django.shortcuts import render, redirect
 from django.utils.timezone import now, timedelta
@@ -14,20 +12,14 @@ def home(request):
             return redirect("vote_code", code)
     # get user
     user = User.objects.get(id=request.session.get("user_id"))
-    # for each poll type, get the 4 latest polls the user viewed
-    choice_polls = ChoicePoll.objects.filter(viewers__id=user.id)[::-1][:4]
-    datetime_polls = DateTimePoll.objects.filter(viewers__id=user.id)[::-1][:4]
-    tierlist_polls = TierlistPoll.objects.filter(viewers__id=user.id)[::-1][:4]
-    ranking_polls = RankingPoll.objects.filter(viewers__id=user.id)[::-1][:4]
-    # create a list with all 16 polls
-    polls = list(chain(choice_polls, datetime_polls, tierlist_polls, ranking_polls))
-    # sort polls
-    sorted_polls = sorted(polls, key=lambda poll: poll.timestamp_created, reverse=True)[:4]
+    # get the last polls the user viewed
+    poll_views = PollView.objects.filter(user=user).order_by("-last_updated")[:8]
+    last_viewed_polls = [view.poll for view in poll_views]
     return render(request, "home.html", {
         "title": "Home",
         "is_authenticated": request.user.is_authenticated,
         "user": user,
-        "polls": sorted_polls,
+        "polls": last_viewed_polls,
     })
 
 
@@ -148,150 +140,143 @@ def save_poll(user, form):
     # set timestamp_end if a value was provided
     if days or hours or minutes:
         poll.timestamp_end = now() + timedelta(days=days, hours=hours, minutes=minutes)
-    # save poll to database
     poll.save()
     return poll
 
 
-def vote_create_choice(request):
+def save_options(poll, form):
+    options = {}
+    # extract voting options from form data
+    for field_name, field_value in form.cleaned_data.items():
+        print(field_name, field_value)
+        if field_name.startswith("option_") and field_value:
+            i = field_name.split("_")[1]
+            if i not in options:
+                options[i] = {}
+            # add value to options dict
+            if field_name.endswith("_text"):
+                options[i].update({"text": field_value})
+            if field_name.endswith("_date"):
+                options[i].update({"date": field_value})
+            if field_name.endswith("_time"):
+                options[i].update({"time": field_value})
+            if field_name.endswith("_image"):
+                options[i].update({"image": field_value})
+    # create VotingOption objects
+    for o in options.values():
+        voting_option = VotingOption(poll=poll)
+        if text := o.get("text"):
+            voting_option.text = text
+        if date := o.get("date"):
+            voting_option.date = date
+        if time := o.get("time"):
+            voting_option.time = time
+        if image := o.get("image"):
+            voting_option.image = image
+        voting_option.save()
+
+
+def vote_create(request, poll_type, template, title):
     user = User.objects.get(id=request.session.get("user_id"))
-    form = ChoicePollForm()
+    form = PollForm()
     if request.method == "POST":
-        form = ChoicePollForm(request.POST)
+        form = PollForm(request.POST, request.FILES)
         if form.is_valid():
+            # save poll to database
             poll = save_poll(user, form)
-            # get items from form; create a ChoiceObject for each
-            for field_name, field_value in form.cleaned_data.items():
-                if field_name.startswith("item_") and field_value:
-                    ChoiceObject(poll=poll, value=field_value).save()
+            # save voting options to database
+            save_options(poll, form)
             return redirect("vote_code", poll.code)
-    return render(request, "vote_create_choice.html", {
-        "title": "Neue Umfrage",
+    return render(request, template, {
+        "title": title,
         "is_authenticated": request.user.is_authenticated,
+        "poll_type": poll_type,
         "user": user,
         "form": form,
     })
+
+
+def vote_create_choice(request):
+    return vote_create(request, "POLL", "vote_create_choice.html", "Neue Umfrage")
 
 
 def vote_create_date(request):
-    user = User.objects.get(id=request.session.get("user_id"))
-    form = DateTimePollForm()
-    if request.method == "POST":
-        form = DateTimePollForm(request.POST)
-        if form.is_valid():
-            poll = save_poll(user, form)
-            # get items from form; create a DateTimeObject for each
-            for field_name, field_value in form.cleaned_data.items():
-                if field_name.startswith("item_") and field_value:
-                    DateTimeObject(poll=poll, value=field_value).save()
-            return redirect("vote_code", poll.code)
-    return render(request, "vote_create_datetime.html", {
-        "title": "Neue Terminabstimmung",
-        "is_authenticated": request.user.is_authenticated,
-        "user": user,
-        "form": form,
-    })
+    return vote_create(request, "DATE", "vote_create_datetime.html", "Neue Terminabstimmung")
 
 
 def vote_create_tierlist(request):
-    user = User.objects.get(id=request.session.get("user_id"))
-    form = TierlistPollForm()
-    if request.method == "POST":
-        form = TierlistPollForm(request.POST, request.FILES)
-        if form.is_valid():
-            poll = save_poll(user, form)
-            # get items from form; create a TierlistObject for each
-            for field_name, field_value in form.cleaned_data.items():
-                if field_name.startswith("item_") and field_value:
-                    # TODO: upload/save image
-                    TierlistObject(poll=poll, image=field_value, value=field_value).save()
-            return redirect("vote_code", poll.code)
-    return render(request, "vote_create_tierlist.html", {
-        "title": "Neue Tierlist",
-        "is_authenticated": request.user.is_authenticated,
-        "user": user,
-        "form": form,
-    })
+    return vote_create(request, "TIER", "vote_create_tierlist.html", "Neue Tierlist")
 
 
 def vote_create_ranking(request):
-    user = User.objects.get(id=request.session.get("user_id"))
-    form = RankingPollForm()
-    if request.method == "POST":
-        form = RankingPollForm(request.POST, request.FILES)
-        if form.is_valid():
-            poll = save_poll(user, form)
-            # get items from form; create a RankingObject for each
-            for field_name, field_value in form.cleaned_data.items():
-                if field_name.startswith("item_") and field_value:
-                    # TODO: upload/save image
-                    RankingObject(poll=poll, image=field_value, value=field_value).save()
-            return redirect("vote_code", poll.code)
-    return render(request, "vote_create_ranking.html", {
-        "title": "Neue Rangliste",
-        "is_authenticated": request.user.is_authenticated,
-        "user": user,
-        "form": form,
-    })
+    return vote_create(request, "RANK", "vote_create_ranking.html", "Neue Rangliste")
+
+
+def save_vote(poll, user, form):
+    # create an object to store the vote data
+    vote_data = {}
+    for field_name, field_value in form.cleaned_data.items():
+        if field_name.startswith("option_"):
+            # add option to vote data
+            option_id = int(field_name.split("_")[1])
+            vote_data[option_id] = field_value
+    # save vote to database
+    Vote(poll=poll, user=user, data=vote_data).save()
 
 
 def vote_code(request, code):
+    # check if a poll with the given code exists
+    if not (poll := Poll.objects.filter(code=code).first()):
+        # TODO: 404 page
+        return redirect("home")
     user = User.objects.get(id=request.session.get("user_id"))
-    show_form = True
-    # handle ChoicePoll
-    if poll := ChoicePoll.objects.filter(code=code).first():
-        poll.viewers.remove(user)
-        poll.viewers.add(user)
-        form = ChoiceVoteForm()
-        # check if user has already submitted a vote for this poll
-        if ChoiceVote.objects.filter(poll=poll, user_id=user.id).exists():
-            show_form = False
-        else:
-            vote_objects = ChoiceObject.objects.filter(poll=poll)
-            form = ChoiceVoteForm(vote_objects=vote_objects)
-            if request.method == "POST":
-                form = ChoiceVoteForm(request.POST, vote_objects=vote_objects)
-                if form.is_valid():
-                    # create object to store vote data
-                    vote_data = {}
-                    for field_name, field_value in form.cleaned_data.items():
-                        if field_name.startswith("object_"):
-                            # add object to vote data
-                            object_id = int(field_name.split("_")[1])
-                            vote_data[object_id] = field_value
-                    # create a vote object
-                    ChoiceVote(poll=poll, user_id=user.id, data=vote_data).save()
-                    show_form = False
-    # handle DateTimePoll
-    if poll := DateTimePoll.objects.filter(code=code).first():
-        poll.viewers.remove(user)
-        poll.viewers.add(user)
-        form = DateTimeVoteForm()
-        # check if user has already submitted a vote for this poll
-        if DateTimeVote.objects.filter(poll=poll, user_id=user.id).exists():
-            show_form = False
-        else:
-            vote_objects = DateTimeObject.objects.filter(poll=poll)
-            form = DateTimeVoteForm(vote_objects=vote_objects)
-            if request.method == "POST":
-                form = DateTimeVoteForm(request.POST, vote_objects=vote_objects)
-                if form.is_valid():
-                    # create object to store vote data
-                    vote_data = {}
-                    for field_name, field_value in form.cleaned_data.items():
-                        if field_name.startswith("object_"):
-                            # add object to vote data
-                            object_id = int(field_name.split("_")[1])
-                            vote_data[object_id] = field_value
-                    # create a vote object
-                    DateTimeVote(poll=poll, user_id=user.id, data=vote_data).save()
-                    show_form = False
+    # update poll views
+    if not (poll_view := PollView.objects.filter(poll=poll, user=user).first()):
+        poll_view = PollView(user=user, poll=poll)
+    poll_view.save()
+    # handle tierlist
+    if poll.poll_type == "TIER":
+        return vote_code_tierlist(request, poll)
+    # get poll_type
+    poll_type = poll.poll_type
+    if poll_type == "DATE":
+        poll_type = poll.date_mode
+    # get voting options for this poll and create a VotingForm
+    voting_options = VotingOption.objects.filter(poll=poll)
+    form = VotingForm(voting_options=voting_options, poll_type=poll_type)
+    show_form = False
+    # check if the user has already submitted a vote for this poll
+    if not Vote.objects.filter(poll=poll, user=user).exists():
+        # user has not voted yet
+        show_form = True
+        if request.method == "POST":
+            form = VotingForm(request.POST, voting_options=voting_options)
+            if form.is_valid():
+                save_vote(poll, user, form)
+                show_form = False
     return render(request, "vote_code.html", {
         "title": poll.title,
         "is_authenticated": request.user.is_authenticated,
+        "show_form": show_form,
         "form": form,
         "poll": poll,
+    })
+
+
+def vote_code_tierlist(request, poll):
+    user = User.objects.get(id=request.session.get("user_id"))
+    voting_options = VotingOption.objects.filter(poll=poll)
+    show_form = False
+    # check if the user has already submitted a vote for this poll
+    if not Vote.objects.filter(poll=poll, user=user).exists():
+        # user has not voted yet
+        show_form = True
+    return render(request, "vote_code_tierlist.html", {
+        "title": poll.title,
+        "is_authenticated": request.user.is_authenticated,
         "show_form": show_form,
+        "voting_options": voting_options,
+        "poll": poll,
     })
 
 

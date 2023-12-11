@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="{% static "product/vote_code.css" %}">
 {% endblock %}
 {% block body %}
-  <div class="container mt-5">
+  <div class="container my-5">
 
     <div class="row">
       <h1 class="col-12 word-wrap">{{ poll.title }}</h1>
@@ -20,29 +20,31 @@
           <p>Komm zurück, nachdem die Abstimmung beendet ist, um das Ergebnis zu sehen!</p>
         </div>
       {% else %}
-        <form method="POST">
-          {% csrf_token %}
-          <div class="row justify-content-center">
+        {% block form %}
+          <form method="POST">
+            {% csrf_token %}
+            <div class="row justify-content-center">
 
-            {% for field in form.visible_fields %}
-              {% if "object_" in field.name %}
-                <div class="col-12 mt-4">
-                  {{ field.errors }}
-                  <div class="input-group justify-content-center input-group-lg">
-                    {{ field.label_tag }}
-                    <div class="input-group-text input-group-text-checkbox">
-                      {{ field }}
+              {% for field in form.visible_fields %}
+                {% if "option_" in field.name %}
+                  <div class="col-12 mt-4">
+                    {{ field.errors }}
+                    <div class="input-group justify-content-center input-group-lg">
+                      {{ field.label_tag }}
+                      <div class="input-group-text input-group-text-checkbox">
+                        {{ field }}
+                      </div>
                     </div>
                   </div>
-                </div>
-              {% endif %}
-            {% endfor %}
-          </div>
+                {% endif %}
+              {% endfor %}
+            </div>
 
-          <div class="row justify-content-center mt-4">
-            <button class="btn btn-large btn-submit px-5 py-2" type="submit">Absenden</button>
-          </div>
-        </form>
+            <div class="row justify-content-center mt-4">
+              <button class="btn btn-large btn-submit px-5 py-2" type="submit">Absenden</button>
+            </div>
+          </form>
+        {% endblock %}
       {% endif %}
 
     </div>
@@ -50,9 +52,9 @@
 {% endblock %}
 {% block scripts %}
   <script type="text/javascript">
-    let multiple_choice_allowed = "{{ poll.multiple_choice_allowed }}";
-    let countDownDate = new Date("{{ poll.timestamp_end|escapejs }}").getTime();
+      let multiple_choice_allowed = "{{ poll.multiple_choice_allowed }}";
+      let countDownDate = new Date("{{ poll.timestamp_end|escapejs }}").getTime();
   </script>
-  <script src={% static "product/forms.js" %}></script>
-  <script src={% static "product/vote_code.js" %}></script>
+  <script src="{% static "product/forms.js" %}"></script>
+  <script src="{% static "product/vote_code.js" %}"></script>
 {% endblock %}
