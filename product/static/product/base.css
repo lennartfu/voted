@@ -10,7 +10,8 @@ header {
     color: #DCCAE9;
 }
 
-.navbar-brand:hover, .navbar-toggler:hover, .nav-link:hover {
+.navbar-brand:hover, .navbar-toggler:hover, .nav-link:hover,
+.navbar-brand:focus, .navbar-toggler:focus, .nav-link:focus {
     color: #9356A0;
 }
 
@@ -43,7 +44,7 @@ header {
     border-radius: 1vmin;
 }
 
-.nav-btn:hover {
+.nav-btn:hover, .nav-btn:focus {
     background-color: #DCCAE9;
     color: #220A35;
 }
