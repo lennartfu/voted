@@ -252,6 +252,34 @@ def save_vote(poll, user, form):
     Vote(poll=poll, user=user, data=vote_data).save()
 
 
+def label_for_option(option):
+    if option.poll.poll_type in ["POLL", "TIER", "RANK"]:
+        return option.text
+    if option.poll.poll_type == "DATE":
+        locale.setlocale(locale.LC_ALL, "de_DE")
+        if option.poll.date_mode == "DATE":
+            return f"{option.date.strftime('%A, %d. %B %Y')}"
+        if option.poll.date_mode == "TIME":
+            return f"{option.time.strftime('%H:%M')} Uhr"
+        if option.poll.date_mode == "BOTH":
+            return f"{option.date.strftime('%A, %d.%m.%Y')} um {option.time.strftime('%H:%M')} Uhr"
+        locale.setlocale(locale.LC_ALL, "en_US")
+
+
+def get_result(poll):
+    votes = Vote.objects.filter(poll=poll)
+    voting_options = VotingOption.objects.filter(poll=poll)
+    votes_per_option = {str(option.id): [label_for_option(option), 0] for option in voting_options}
+    for vote in votes:
+        for id, value in vote.data.items():
+            option_label = label_for_option(voting_options.get(id=id))
+            if not votes_per_option.get(id):
+                votes_per_option[id] = [option_label, 0]
+            if value:
+                votes_per_option[id][1] += 1
+    return sorted(votes_per_option.items(), key=lambda item: item[1][1], reverse=True)
+
+
 def vote_code(request, code):
     # check if a poll with the given code exists
     if not (poll := Poll.objects.filter(code=code).first()):
@@ -282,12 +310,19 @@ def vote_code(request, code):
             if form.is_valid():
                 save_vote(poll, user, form)
                 show_form = False
+                return redirect("vote_code", poll.code)
+    result = None
+    if poll.show_result:
+        result = get_result(poll)
+    is_owner = poll.owner == user
     return render(request, "vote_code.html", {
         "title": poll.title,
         "is_authenticated": request.user.is_authenticated,
+        "is_owner": is_owner,
         "show_form": show_form,
         "form": form,
         "poll": poll,
+        "result": result,
     })
 
 
@@ -306,6 +341,21 @@ def vote_code_tierlist(request, poll):
         "voting_options": voting_options,
         "poll": poll,
     })
+
+
+def vote_close(request, code):
+    # check if a poll with the given code exists
+    if not (poll := Poll.objects.filter(code=code).first()):
+        # TODO: 404 page
+        return redirect("home")
+    user = User.objects.get(id=request.session.get("user_id"))
+    if user == poll.owner:
+        # user is the poll owner
+        poll.timestamp_end = now()
+        poll.is_active = False
+        poll.show_result = True
+        poll.save()
+    return redirect("vote_code", code)
 
 
 def log(request):
