@@ -309,6 +309,7 @@ def vote_code(request, code):
             form = VotingForm(request.POST, voting_options=voting_options)
             if form.is_valid():
                 save_vote(poll, user, form)
+                user.polls_participated.add(poll)
                 show_form = False
                 return redirect("vote_code", poll.code)
     result = None
