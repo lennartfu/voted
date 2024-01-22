@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import auth
 from django.shortcuts import render, redirect
 from django.utils.timezone import now, timedelta
@@ -280,6 +282,26 @@ def get_result(poll):
     return sorted(votes_per_option.items(), key=lambda item: item[1][1], reverse=True)
 
 
+def get_result_tierlist(poll):
+    votes = Vote.objects.filter(poll=poll)
+    voting_options = VotingOption.objects.filter(poll=poll)
+    # create a dict that contains all votes for each option
+    combined_votes = {option.id: [] for option in voting_options}
+    for vote in votes:
+        for tier, items in vote.data.items():
+            if tier != "none":
+                for i in items:
+                    combined_votes[i].append(tier)
+    # find the median vote for each option and create a final result dict
+    result = {"S": [], "A": [], "B": [], "C": [], "D": [], "F": [], "none": []}
+    for item, votes in combined_votes.items():
+        median = "none"
+        if votes:
+            median = votes[int(len(votes) / 2 - 0.5)]
+        result[median].append(item)
+    return result
+
+
 def vote_code(request, code):
     # check if a poll with the given code exists
     if not (poll := Poll.objects.filter(code=code).first()):
@@ -310,7 +332,6 @@ def vote_code(request, code):
             if form.is_valid():
                 save_vote(poll, user, form)
                 user.polls_participated.add(poll)
-                show_form = False
                 return redirect("vote_code", poll.code)
     result = None
     if poll.show_result:
@@ -335,12 +356,23 @@ def vote_code_tierlist(request, poll):
     if not Vote.objects.filter(poll=poll, user=user).exists():
         # user has not voted yet
         show_form = True
+        if request.method == "POST":
+            body = json.loads(request.body)
+            if data := body.get("vote_data"):
+                Vote(poll=poll, user=user, data=data).save()
+                return redirect("vote_code", poll.code)
+    result = None
+    if poll.show_result:
+        result = get_result_tierlist(poll)
+    is_owner = poll.owner == user
     return render(request, "vote_code_tierlist.html", {
         "title": poll.title,
         "is_authenticated": request.user.is_authenticated,
+        "is_owner": is_owner,
         "show_form": show_form,
         "voting_options": voting_options,
         "poll": poll,
+        "result": result,
     })
 
 
