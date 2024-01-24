@@ -5,6 +5,14 @@ $(document).ready(function () {
         }
     });
 
+    $(document).on('click', '.input-group-text-checkbox', function (event) {
+        if ($(event.target).is('input[type="checkbox"]')) {
+            return;
+        }
+        let checkbox = $(this).find('input[type="checkbox"]');
+        checkbox.prop("checked", !checkbox.prop("checked")).change();
+    });
+
     if (countDownDate) {
         const timer = $(".timer")
 

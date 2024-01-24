@@ -8,7 +8,7 @@
     border-radius: 1vmin;
 }
 
-.btn-submit:hover {
+.btn-submit:hover, .btn-submit:focus {
     background-color: #DCCAE9;
     color: #220A35;
 }
@@ -23,7 +23,7 @@
     border-radius: 1vmin;
 }
 
-.btn-delete:hover {
+.btn-delete:hover, .btn-delete:focus {
     background-color: #C90000;
     color: #220A35;
 }

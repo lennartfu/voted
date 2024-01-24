@@ -5,6 +5,96 @@
   <link rel="stylesheet" href="{% static "product/vote_code.css" %}">
   <link rel="stylesheet" href="{% static "product/vote_code_tierlist.css" %}">
 {% endblock %}
+{% block result %}
+  <div class="tierlist mt-3 px-0">
+    {% if poll.num_tiers >= 1 %}
+      <div class="tier-row first">
+        <div id="S" class="tier-label">S</div>
+        <div class="tier-content">
+          {% for option in voting_options %}
+            {% if option.id in result.S %}
+              <img id="{{ option.id }}" src="{{ option.image.url }}" class="tier-item" title="{{ option.text }}"
+                   alt="{{ option.text }}">
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    {% if poll.num_tiers >= 2 %}
+      <div class="tier-row">
+        <div id="A" class="tier-label">A</div>
+        <div class="tier-content">
+          {% for option in voting_options %}
+            {% if option.id in result.A %}
+              <img id="{{ option.id }}" src="{{ option.image.url }}" class="tier-item" title="{{ option.text }}"
+                   alt="{{ option.text }}">
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    {% if poll.num_tiers >= 3 %}
+      <div class="tier-row">
+        <div id="B" class="tier-label">B</div>
+        <div class="tier-content">
+          {% for option in voting_options %}
+            {% if option.id in result.B %}
+              <img id="{{ option.id }}" src="{{ option.image.url }}" class="tier-item" title="{{ option.text }}"
+                   alt="{{ option.text }}">
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    {% if poll.num_tiers >= 4 %}
+      <div class="tier-row">
+        <div id="C" class="tier-label">C</div>
+        <div class="tier-content">
+          {% for option in voting_options %}
+            {% if option.id in result.C %}
+              <img id="{{ option.id }}" src="{{ option.image.url }}" class="tier-item" title="{{ option.text }}"
+                   alt="{{ option.text }}">
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    {% if poll.num_tiers >= 5 %}
+      <div class="tier-row">
+        <div id="D" class="tier-label">D</div>
+        <div class="tier-content">
+          {% for option in voting_options %}
+            {% if option.id in result.D %}
+              <img id="{{ option.id }}" src="{{ option.image.url }}" class="tier-item" title="{{ option.text }}"
+                   alt="{{ option.text }}">
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    {% if poll.num_tiers >= 6 %}
+      <div class="tier-row">
+        <div id="F" class="tier-label">F</div>
+        <div class="tier-content">
+          {% for option in voting_options %}
+            {% if option.id in result.F %}
+              <img id="{{ option.id }}" src="{{ option.image.url }}" class="tier-item" title="{{ option.text }}"
+                   alt="{{ option.text }}">
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  <div class="tier-content last px-0 mt-3 mt-sm-5">
+    {% for option in voting_options %}
+      {% if option.id in result.none %}
+        <img id="{{ option.id }}" src="{{ option.image.url }}" class="tier-item" title="{{ option.text }}"
+             alt="{{ option.text }}">
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endblock %}
 {% block form %}
   <div class="tierlist mt-3 px-0">
     {% if poll.num_tiers >= 1 %}
@@ -69,7 +159,12 @@
 {% endblock %}
 {% block scripts %}
   <script type="text/javascript">
-      let multiple_choice_allowed = "{{ poll.multiple_choice_allowed }}";
+      {% if not poll.is_active or poll.show_result and not show_form %}
+          let final = true;
+      {% else %}
+          let final = false;
+      {% endif %}
+      let csrfToken = "{{ csrf_token }}";
       let countDownDate = new Date("{{ poll.timestamp_end|escapejs }}").getTime();
   </script>
   <script src="{% static "product/forms.js" %}"></script>

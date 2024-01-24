@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import auth
 from django.shortcuts import render, redirect
 from django.utils.timezone import now, timedelta
@@ -252,6 +254,54 @@ def save_vote(poll, user, form):
     Vote(poll=poll, user=user, data=vote_data).save()
 
 
+def label_for_option(option):
+    if option.poll.poll_type in ["POLL", "TIER", "RANK"]:
+        return option.text
+    if option.poll.poll_type == "DATE":
+        locale.setlocale(locale.LC_ALL, "de_DE")
+        if option.poll.date_mode == "DATE":
+            return f"{option.date.strftime('%A, %d. %B %Y')}"
+        if option.poll.date_mode == "TIME":
+            return f"{option.time.strftime('%H:%M')} Uhr"
+        if option.poll.date_mode == "BOTH":
+            return f"{option.date.strftime('%A, %d.%m.%Y')} um {option.time.strftime('%H:%M')} Uhr"
+        locale.setlocale(locale.LC_ALL, "en_US")
+
+
+def get_result(poll):
+    votes = Vote.objects.filter(poll=poll)
+    voting_options = VotingOption.objects.filter(poll=poll)
+    votes_per_option = {str(option.id): [label_for_option(option), 0] for option in voting_options}
+    for vote in votes:
+        for id, value in vote.data.items():
+            option_label = label_for_option(voting_options.get(id=id))
+            if not votes_per_option.get(id):
+                votes_per_option[id] = [option_label, 0]
+            if value:
+                votes_per_option[id][1] += 1
+    return sorted(votes_per_option.items(), key=lambda item: item[1][1], reverse=True)
+
+
+def get_result_tierlist(poll):
+    votes = Vote.objects.filter(poll=poll)
+    voting_options = VotingOption.objects.filter(poll=poll)
+    # create a dict that contains all votes for each option
+    combined_votes = {option.id: [] for option in voting_options}
+    for vote in votes:
+        for tier, items in vote.data.items():
+            if tier != "none":
+                for i in items:
+                    combined_votes[i].append(tier)
+    # find the median vote for each option and create a final result dict
+    result = {"S": [], "A": [], "B": [], "C": [], "D": [], "F": [], "none": []}
+    for item, votes in combined_votes.items():
+        median = "none"
+        if votes:
+            median = votes[int(len(votes) / 2 - 0.5)]
+        result[median].append(item)
+    return result
+
+
 def vote_code(request, code):
     # check if a poll with the given code exists
     if not (poll := Poll.objects.filter(code=code).first()):
@@ -281,13 +331,20 @@ def vote_code(request, code):
             form = VotingForm(request.POST, voting_options=voting_options)
             if form.is_valid():
                 save_vote(poll, user, form)
-                show_form = False
+                user.polls_participated.add(poll)
+                return redirect("vote_code", poll.code)
+    result = None
+    if poll.show_result:
+        result = get_result(poll)
+    is_owner = poll.owner == user
     return render(request, "vote_code.html", {
         "title": poll.title,
         "is_authenticated": request.user.is_authenticated,
+        "is_owner": is_owner,
         "show_form": show_form,
         "form": form,
         "poll": poll,
+        "result": result,
     })
 
 
@@ -299,13 +356,39 @@ def vote_code_tierlist(request, poll):
     if not Vote.objects.filter(poll=poll, user=user).exists():
         # user has not voted yet
         show_form = True
+        if request.method == "POST":
+            body = json.loads(request.body)
+            if data := body.get("vote_data"):
+                Vote(poll=poll, user=user, data=data).save()
+                return redirect("vote_code", poll.code)
+    result = None
+    if poll.show_result:
+        result = get_result_tierlist(poll)
+    is_owner = poll.owner == user
     return render(request, "vote_code_tierlist.html", {
         "title": poll.title,
         "is_authenticated": request.user.is_authenticated,
+        "is_owner": is_owner,
         "show_form": show_form,
         "voting_options": voting_options,
         "poll": poll,
+        "result": result,
     })
+
+
+def vote_close(request, code):
+    # check if a poll with the given code exists
+    if not (poll := Poll.objects.filter(code=code).first()):
+        # TODO: 404 page
+        return redirect("home")
+    user = User.objects.get(id=request.session.get("user_id"))
+    if user == poll.owner:
+        # user is the poll owner
+        poll.timestamp_end = now()
+        poll.is_active = False
+        poll.show_result = True
+        poll.save()
+    return redirect("vote_code", code)
 
 
 def log(request):

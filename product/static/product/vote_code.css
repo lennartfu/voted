@@ -13,6 +13,13 @@
     font-weight: 600;
 }
 
+h3 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+}
+
 .submit-message {
     height: 50vh;
     display: flex;
@@ -20,15 +27,51 @@
     justify-content: center;
 }
 
-.submit-message p {
+.submit-text {
     color: #FFF;
     text-align: center;
     font-size: 1.5rem;
     font-weight: 600;
 }
 
-.input-group label {
+.input-group label, .input-group-label {
+    flex-grow: 1;
+    background-color: #DCCAE9;
+    border: 3px solid #DCCAE9;
+    border-right: none;
     font-family: "Montserrat", sans-serif;
     font-weight: 600;
     min-width: 500px;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.input-group-text-checkbox {
+    background-color: #9C85DC;
+    border: 3px solid #9C85DC;
+    border-left: none;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+input[type=checkbox] {
+    border-radius: 100% !important;
+}
+
+.input-group-result {
+    padding-left: 1.3rem !important;
+    padding-right: 1.4rem !important;
+    background-color: #9C85DC;
+    text-align: center;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    font-variant: tabular-nums;
+}
+
+.input-group label:hover, .input-group-text-checkbox:hover, input[type=checkbox]:hover {
+    cursor: pointer;
+}
+
+.input-group:hover label, .input-group:hover .input-group-text-checkbox {
+    background-color: #220A35;
+    color: #DCCAE9;
+    border-color: #DCCAE9;
 }

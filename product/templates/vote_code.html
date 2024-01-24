@@ -14,28 +14,56 @@
     </div>
 
     <div class="row">
-      {% if not show_form %}
-        <div class="submit-message">
-          <h1 class="mt-5">Deine Stimme wurde gezählt.</h1>
-          <p>Komm zurück, nachdem die Abstimmung beendet ist, um das Ergebnis zu sehen!</p>
-        </div>
-      {% else %}
+
+      {% if not poll.is_active or poll.show_result and not show_form %}
+        {% block result %}
+          {% for item in result %}
+            <div class="col-3"></div>
+            <div class="col-6 mt-4">
+              <div class="input-group d-flex justify-content-center input-group-lg">
+                <div class="input-group-text input-group-label">{{ item.1.0 }}</div>
+                <span class="input-group-text input-group-result">{{ item.1.1 }}</span>
+              </div>
+            </div>
+            <div class="col-3"></div>
+          {% endfor %}
+        {% endblock %}
+      {% endif %}
+
+      {% if poll.is_active and show_form %}
         {% block form %}
+
+          {% if poll.poll_type == "POLL" %}
+            {% if poll.multiple_choice_allowed %}
+              <h3 class="mt-3 mb-0">Wähle eine oder mehrere Optionen:</h3>
+            {% else %}
+              <h3 class="mt-3 mb-0">Wähle eine Option:</h3>
+            {% endif %}
+          {% endif %}
+          {% if poll.poll_type == "DATE" %}
+            {% if poll.multiple_choice_allowed %}
+              <h3 class="mt-3 mb-0">Wähle einen oder mehrere Termine:</h3>
+            {% else %}
+              <h3 class="mt-3 mb-0">Wähle einen Termin:</h3>
+            {% endif %}
+          {% endif %}
           <form method="POST">
             {% csrf_token %}
             <div class="row justify-content-center">
 
               {% for field in form.visible_fields %}
                 {% if "option_" in field.name %}
-                  <div class="col-12 mt-4">
+                  <div class="col-3"></div>
+                  <div class="col-6 mt-4">
                     {{ field.errors }}
-                    <div class="input-group justify-content-center input-group-lg">
+                    <div class="input-group d-flex justify-content-center input-group-lg">
                       {{ field.label_tag }}
                       <div class="input-group-text input-group-text-checkbox">
                         {{ field }}
                       </div>
                     </div>
                   </div>
+                  <div class="col-3"></div>
                 {% endif %}
               {% endfor %}
             </div>
@@ -45,6 +73,32 @@
             </div>
           </form>
         {% endblock %}
+      {% endif %}
+
+      {% if not poll.is_active %}
+        <div class="row mt-5">
+          <h1 class="mt-4">Finales Ergebnis.</h1>
+          <p class="submit-text">Diese Abstimmung endete am {{ poll.timestamp_end.date }}.</p>
+        </div>
+      {% else %}
+        {% if not show_form %}
+          {% if poll.show_result %}
+            <div class="row mt-5">
+              <h1 class="mt-4">Deine Stimme wurde gezählt.</h1>
+              <p class="submit-text">Die Abstimmung läuft noch, aber du kannst bereits das Ergebnis sehen!</p>
+            </div>
+          {% else %}
+            <div class="submit-message">
+              <h1 class="mt-4">Deine Stimme wurde gezählt.</h1>
+              <p class="submit-text">Komm zurück, nachdem die Abstimmung beendet ist, um das Ergebnis zu sehen!</p>
+            </div>
+          {% endif %}
+        {% endif %}
+        {% if is_owner %}
+          <div class="row justify-content-center mt-4">
+            <a class="btn btn-large btn-delete px-5 py-2" href="{% url 'vote_close' poll.code %}">Abstimmung beenden</a>
+          </div>
+        {% endif %}
       {% endif %}
 
     </div>
