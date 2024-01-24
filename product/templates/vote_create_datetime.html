@@ -5,7 +5,7 @@
 
     <div class="col-auto">
       {{ form.date_mode.errors }}
-      <div class="input-group input-group-lg">
+      <div class="input-group input-group-lg ">
         {{ form.date_mode.label_tag }}
         {{ form.date_mode }}
       </div>
@@ -18,6 +18,7 @@
         <div class="input-group-text input-group-text-checkbox">
           {{ form.multiple_choice_allowed }}
         </div>
+          <button class="btn btn-secondary help" type="button" data-toggle="popover" data-placement="right" title="Erlaube Teilnehmern mehrere Antworten auszuwählen." data-content="Hier ist der Inhalt des Popovers.">?</button>
       </div>
     </div>
 
@@ -28,18 +29,19 @@
         <div class="input-group-text input-group-text-checkbox">
           {{ form.show_result }}
         </div>
+          <button class="btn btn-secondary px-3 help" type="button" data-toggle="popover" title="Wähle aus, ob Teilnehmer das Ergebnis nach Einreichen der Antwort direkt die Ergebnisse sehen können." data-content="Wähle aus, ob Teilnehmer das Ergebnis nach Einreichen der Antwort direkt die Ergebnisse sehen können.">?</button>
       </div>
     </div>
 
-    <div class="col-auto">
-      {{ form.logged_in_only.errors }}
-      <div class="input-group input-group-lg">
-        {{ form.logged_in_only.label_tag }}
-        <div class="input-group-text input-group-text-checkbox">
-          {{ form.logged_in_only }}
-        </div>
-      </div>
-    </div>
+{#    <div class="col-auto">#}
+{#      {{ form.logged_in_only.errors }}#}
+{#      <div class="input-group input-group-lg">#}
+{#        {{ form.logged_in_only.label_tag }}#}
+{#        <div class="input-group-text input-group-text-checkbox">#}
+{#          {{ form.logged_in_only }}#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
 
   </div>
 {% endblock %}

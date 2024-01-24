@@ -2,7 +2,7 @@
 {% block extra_options %}
   <div class="row justify-content-between mt-4">
 
-    <div class="col-6">
+    <div class="col-auto">
       {{ form.criteria_good.errors }}
       <div class="input-group input-group-lg">
         {{ form.criteria_good.label_tag }}
@@ -19,18 +19,19 @@
         <div class="input-group-text input-group-text-checkbox">
           {{ form.show_result }}
         </div>
+          <button class="btn btn-secondary px-3 help" type="button" data-toggle="popover" title="Wähle aus, ob Teilnehmer das Ergebnis nach Einreichen der Antwort direkt die Ergebnisse sehen können." data-content="Wähle aus, ob Teilnehmer das Ergebnis nach Einreichen der Antwort direkt die Ergebnisse sehen können.">?</button>
       </div>
     </div>
 
-    <div class="col-auto">
-      {{ form.logged_in_only.errors }}
-      <div class="input-group input-group-lg">
-        {{ form.logged_in_only.label_tag }}
-        <div class="input-group-text input-group-text-checkbox">
-          {{ form.logged_in_only }}
-        </div>
-      </div>
-    </div>
+{#    <div class="col-auto">#}
+{#      {{ form.logged_in_only.errors }}#}
+{#      <div class="input-group input-group-lg">#}
+{#        {{ form.logged_in_only.label_tag }}#}
+{#        <div class="input-group-text input-group-text-checkbox">#}
+{#          {{ form.logged_in_only }}#}
+{#        </div>#}
+{#      </div>#}
+{#    </div>#}
 
   </div>
 {% endblock %}

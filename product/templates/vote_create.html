@@ -56,6 +56,20 @@
         <option value="RANK" {% if poll_type == "RANK" %}selected{% endif %}>Rangliste</option>
       </select>
 
+        <div class="col-12 text-center mt-4">
+        <div class="alert alert-info">
+          {% if poll_type == "POLL" %}
+            Erstellen einer Umfrage: Ermöglicht es den Teilnehmern, aus einer Liste von Optionen zu wählen, um ihre Meinungen oder Präferenzen zu einer bestimmten Frage oder Thematik auszudrücken.
+          {% elif poll_type == "DATE" %}
+            Erstellen einer Terminabstimmung: Gestattet den Teilnehmern, sich auf einen gemeinsamen Termin zu einigen, indem sie aus verschiedenen vorgeschlagenen Zeitpunkten wählen. (Tag, Uhrzeit oder Tag & Uhrzeit.
+          {% elif poll_type == "TIER" %}
+            Erstellen einer Tierlist: Erlaubt es den Teilnehmern, Elemente in einer Hierarchie oder Reihenfolge zu platzieren, um eine rangierte Liste basierend auf persönlichen Präferenzen zu erstellen. Jedes Tier kann mehrmals belegt werden. S-Tier = gut -> F-Tier = schlecht.
+          {% elif poll_type == "RANK" %}
+            Erstellen einer Rangliste: Bietet den Teilnehmern die Möglichkeit, Elemente nach ihrer Präferenz zu ordnen, wodurch eine Rangfolge entsteht, die die individuellen Vorlieben für verschiedene Optionen zeigt.
+          {% endif %}
+        </div>
+      </div>
+
       <h2 class="mt-4">Einstellungen:</h2>
 
       <div class="row justify-content-between mt-4">
@@ -69,35 +83,42 @@
       </div>
 
       <div class="row justify-content-start mt-4">
-        <div class="col-2">
+        <div class="col-3">
           {{ form.days.errors }}
           <div class="input-group input-group-lg">
             {{ form.days.label_tag }}
             {{ form.days }}
+              <button class="btn btn-secondary help" type="button" data-toggle="popover" title="Hier kannst du die Anzahl der Tage für die Abstimmung einstellen." data-content="Hier kannst du die Anzahl der Tage für die Abstimmung einstellen.">?</button>
+
           </div>
         </div>
-        <div class="col-2">
+        <div class="col-3">
           {{ form.hours.errors }}
           <div class="input-group input-group-lg">
             {{ form.hours.label_tag }}
             {{ form.hours }}
+              <button class="btn btn-secondary help" type="button" data-toggle="popover" title="Hier kannst du die Anzahl der Stunden für die Abstimmung einstellen." data-content="Hier kannst du die Anzahl der Stunden für die Abstimmung einstellen.">?</button>
+
           </div>
         </div>
-        <div class="col-2">
+        <div class="col-3">
           {{ form.minutes.errors }}
           <div class="input-group input-group-lg">
             {{ form.minutes.label_tag }}
             {{ form.minutes }}
+              <button class="btn btn-secondary help" type="button" data-toggle="popover" title="Hier kannst du die Anzahl der Minuten für die Abstimmung einstellen." data-content="Hier kannst du die Anzahl der Minuten für die Abstimmung einstellen.">?</button>
           </div>
         </div>
-        <div class="col-1"></div>
-        <div class="col-5">
-          {{ form.password.errors }}
-          <div class="input-group input-group-lg">
-            {{ form.password.label_tag }}
-            {{ form.password }}
-          </div>
-        </div>
+
+{#        <div class="col-1"></div>#}
+{#        <div class="col-5">#}
+{#          {{ form.password.errors }}#}
+{#          <div class="input-group input-group-lg">#}
+{#            {{ form.password.label_tag }}#}
+{#            {{ form.password }}#}
+{#          </div>#}
+{#        </div>#}
+
       </div>
 
       <div class="row mt-4">

@@ -1,0 +1,19 @@
+.checkbox-custom_answers{
+    position: relative;
+}
+
+.checkbox-custom_answers:hover::before{
+    content: "Custom Answer!";
+    position: absolute;
+    top: -30px;
+    left: 0;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: none;
+}
+
+.checkbox-custom_answers:hover::before{
+    display: block;
+}

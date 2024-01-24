@@ -6,3 +6,8 @@
 .initial-hidden {
     display: none;
 }
+
+.help{
+    background-color: #9c85dc;
+    color: black;
+}

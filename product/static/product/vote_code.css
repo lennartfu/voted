@@ -75,3 +75,21 @@ input[type=checkbox] {
     color: #DCCAE9;
     border-color: #DCCAE9;
 }
+
+.winner{
+    background-color: #9c85dc;
+    border-color: #9c85dc;
+}
+
+.winner-result{
+
+}
+
+.code-link{
+    text-decoration: none;
+    color: white;
+}
+
+.icon-share{
+    font-size: 10px;
+}
