@@ -27,9 +27,9 @@ SECRET_KEY = 'django-insecure-oy(@jsyk3zt%s0rdn^7j!6_+_8i$9*nme4h)t-j0o^jxp(y9ur
     if not PRODUCTION else env.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = not PRODUCTION
+DEBUG = PRODUCTION
 
-ALLOWED_HOSTS = [] if not PRODUCTION else [".localhost", ".49.12.107.173"]
+ALLOWED_HOSTS = [".localhost", ".49.12.107.173", ".johannfoell.de"]
 
 # Application definition
 
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -133,5 +134,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Security
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
