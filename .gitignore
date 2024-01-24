@@ -241,6 +241,9 @@ fabric.properties
 media/**
 product/media/**
 
+# Product related static files
+./static/
+
 # VS Code
 .vscode/
 
