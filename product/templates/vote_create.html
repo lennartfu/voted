@@ -11,7 +11,7 @@
       <h1>Neue Abstimmung erstellen:</h1>
 
       <div class="row mt-4">
-        <div class="col-3">
+        <div class="col-6 col-lg-3">
           <a href="{% url "vote_create_choice" %}" class="poll-window-link">
             <div
                 class="poll-window poll-window-new choice {% if poll_type == "POLL" %}poll-window-selected{% endif %}">
@@ -19,7 +19,7 @@
             </div>
           </a>
         </div>
-        <div class="col-3">
+        <div class="col-6 col-lg-3">
           <a href="{% url "vote_create_date" %}" class="poll-window-link">
             <div
                 class="poll-window poll-window-new date {% if poll_type == "DATE" %}poll-window-selected{% endif %}">
@@ -27,7 +27,7 @@
             </div>
           </a>
         </div>
-        <div class="col-3">
+        <div class="col-6 col-lg-3">
           <a href="{% url "vote_create_tierlist" %}" class="poll-window-link">
             <div
                 class="poll-window poll-window-new tierlist {% if poll_type == "TIER" %}poll-window-selected{% endif %}">
@@ -35,13 +35,13 @@
             </div>
           </a>
         </div>
-        <div class="col-3">
-          <a href="{% url "vote_create_ranking" %}" class="poll-window-link">
+        <div class="col-6 col-lg-3">
+          <div href="{% url "vote_create_ranking" %}" class="poll-window-link">
             <div
                 class="poll-window poll-window-new ranking {% if poll_type == "RANK" %}poll-window-selected{% endif %}">
-              <h3 class="mb-0">Rangliste</h3>
+              <h3 class="mb-0">Coming soon...</h3>
             </div>
-          </a>
+          </div>
         </div>
       </div>
     </div>
@@ -83,7 +83,7 @@
       </div>
 
       <div class="row justify-content-start mt-4">
-        <div class="col-3">
+        <div class="col-12 col-lg-3">
           {{ form.days.errors }}
           <div class="input-group input-group-lg">
             {{ form.days.label_tag }}
@@ -92,7 +92,7 @@
 
           </div>
         </div>
-        <div class="col-3">
+        <div class="col-12 col-lg-3 mt-4 mt-lg-0">
           {{ form.hours.errors }}
           <div class="input-group input-group-lg">
             {{ form.hours.label_tag }}
@@ -101,7 +101,7 @@
 
           </div>
         </div>
-        <div class="col-3">
+        <div class="col-12 col-lg-3 mt-4 mt-lg-0">
           {{ form.minutes.errors }}
           <div class="input-group input-group-lg">
             {{ form.minutes.label_tag }}

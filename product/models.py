@@ -18,7 +18,7 @@ def generate_unique_code():
 
 
 def option_directory_path(instance, filename):
-    return MEDIA_ROOT / f"voting_options/{instance.poll.code}/{filename}"
+    return f"voting_options/{instance.poll.code}/{filename}"
 
 
 class User(models.Model):

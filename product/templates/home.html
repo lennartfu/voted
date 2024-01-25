@@ -11,33 +11,33 @@
     <div class="new-voting-section">
       <h1>Neue Abstimmung erstellen:</h1>
       <div class="row mt-4">
-        <div class="col-3">
+        <div class="col-6 col-lg-3">
           <a href="{% url "vote_create_choice" %}" class="poll-window-link">
             <div class="poll-window poll-window-new choice">
               <h3 class="mb-0">Umfrage</h3>
             </div>
           </a>
         </div>
-        <div class="col-3">
+        <div class="col-6 col-lg-3">
           <a href="{% url "vote_create_date" %}" class="poll-window-link">
             <div class="poll-window poll-window-new date">
               <h3 class="mb-0">Termin</h3>
             </div>
           </a>
         </div>
-        <div class="col-3">
+        <div class="col-6 col-lg-3">
           <a href="{% url "vote_create_tierlist" %}" class="poll-window-link">
             <div class="poll-window poll-window-new tierlist">
               <h3 class="mb-0">Tierlist</h3>
             </div>
           </a>
         </div>
-        <div class="col-3">
-          <a href="{% url "vote_create_ranking" %}" class="poll-window-link">
+        <div class="col-6 col-lg-3">
+          <div href="{% url "vote_create_ranking" %}" class="poll-window-link">
             <div class="poll-window poll-window-new ranking">
-              <h3 class="mb-0">Rangliste</h3>
+              <h3 class="mb-0">Coming soon...</h3>
             </div>
-          </a>
+          </div>
         </div>
       </div>
     </div>
@@ -46,7 +46,7 @@
       {% if polls %}
         <div class="row">
           {% for poll in polls %}
-            <div class="col-3 mt-2">
+            <div class="col-12 col-lg-3 mt-2">
               <a href="{% url "vote_code" poll.code %}" class="poll-window-link">
                 <div class="poll-window d-flex flex-column
                       {% if poll.poll_type == "POLL" %}choice{% endif %}

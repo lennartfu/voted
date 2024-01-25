@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <div class="col-auto">
+    <div class="col-auto mt-4 mt-lg-0">
       {{ form.show_result.errors }}
       <div class="input-group input-group-lg">
         {{ form.show_result.label_tag }}
@@ -38,7 +38,7 @@
     {% for field in form.visible_fields %}
       {% if "option_" in field.name and "_image" in field.name %}
         <div
-            class="col-6 mt-4 {% if "_1_" in field.name or "_2_" in field.name %}visible{% else %}initial-hidden{% endif %}">
+            class="col-12 col-lg-6 mt-4 {% if "_1_" in field.name or "_2_" in field.name %}visible{% else %}initial-hidden{% endif %}">
           {{ field.errors }}
           <div class="input-group input-group-lg">
             {{ field.label_tag }}

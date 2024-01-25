@@ -57,6 +57,7 @@ h2 {
 
 .ranking {
     border: 10px solid #FF0099;
+    opacity: 33%;
 }
 
 .tierlist {
@@ -79,4 +80,10 @@ h2 {
     position: absolute;
     right: 10px;
     top: 12px;
+}
+
+@media screen and (max-width: 992px) {
+    .poll-window-new {
+        height: 100px;
+    }
 }

@@ -25,14 +25,14 @@
       {% if not poll.is_active or poll.show_result and not show_form %}
           {% block result %}
             {% for item in result %}
-              <div class="col-3"></div>
-              <div class="col-6 mt-4">
+              <div class="col-3 d-none d-lg-flex"></div>
+              <div class="col-12 col-lg-6 mt-4">
                 <div class="input-group d-flex justify-content-center input-group-lg">
                   <div class="input-group-text input-group-label {% if forloop.first %}winner{% endif %}">{{ item.1.0 }}</div>
                   <span class="input-group-text input-group-result {% if forloop.first %}winner-result{% endif %}">{{ item.1.1 }}</span>
                 </div>
               </div>
-              <div class="col-3"></div>
+              <div class="col-3 d-none d-lg-flex"></div>
             {% endfor %}
           {% endblock %}
       {% endif %}
@@ -61,8 +61,8 @@
 
               {% for field in form.visible_fields %}
                 {% if "option_" in field.name %}
-                  <div class="col-3"></div>
-                  <div class="col-6 mt-4">
+                  <div class="col-3 d-none"></div>
+                  <div class="col-12 col-lg-6 mt-4">
                     {{ field.errors }}
                     <div class="input-group d-flex justify-content-center input-group-lg">
                       {{ field.label_tag }}
@@ -71,7 +71,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-3"></div>
+                  <div class="col-3 d-none"></div>
                 {% endif %}
               {% endfor %}
             </div>
