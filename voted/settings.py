@@ -12,21 +12,24 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+from dotenv import dotenv_values
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+env = dotenv_values(BASE_DIR / "voted/.env")
 
-PRODUCTION = False
+# SECURITY WARNING: NEVER set to False in production environment!
+PRODUCTION = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-oy(@jsyk3zt%s0rdn^7j!6_+_8i$9*nme4h)t-j0o^jxp(y9ur'
+SECRET_KEY = 'django-insecure-oy(@jsyk3zt%s0rdn^7j!6_+_8i$9*nme4h)t-j0o^jxp(y9ur' \
+    if not PRODUCTION else env.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = PRODUCTION
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [".localhost", ".49.12.107.173", ".johannfoell.de"]
 
 # Application definition
 
@@ -38,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -117,6 +121,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+STATIC_ROOT = BASE_DIR / 'static/'
 STATIC_URL = 'static/'
 
 MEDIA_ROOT = BASE_DIR / 'product/media/'
@@ -126,3 +131,8 @@ MEDIA_URL = 'media/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Security
+
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
