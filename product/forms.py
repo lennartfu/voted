@@ -108,7 +108,7 @@ class VotingForm(forms.Form):
         super(VotingForm, self).__init__(*args, **kwargs)
         self.label_suffix = ""
         # for each option, add a boolean field
-        locale.setlocale(locale.LC_ALL, "de_DE")
+        locale.setlocale(locale.LC_ALL, "de_DE.utf8")
         for o in voting_options:
             if poll_type == "POLL":
                 self.fields[f"option_{o.id}"] = forms.BooleanField(required=False, label=o.text)
@@ -125,4 +125,4 @@ class VotingForm(forms.Form):
                 self.fields[f"option_{o.id}"] = forms.BooleanField(required=False, label=o.image)
             if poll_type == "RANK":
                 self.fields[f"option_{o.id}"] = forms.BooleanField(required=False, label=o.text)
-        locale.setlocale(locale.LC_ALL, "en_US")
+        locale.setlocale(locale.LC_ALL, "en_US.utf8")
