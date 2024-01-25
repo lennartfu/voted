@@ -17,4 +17,5 @@ urlpatterns = [
     path("vote/<str:code>", views.vote_code, name="vote_code"),
     path("vote/<str:code>/close", views.vote_close, name="vote_close"),
     path("log", views.log, name="log"),
+    path("<path:resource>", views.catch_all, name="catch_all"),
 ]

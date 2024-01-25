@@ -396,3 +396,7 @@ def log(request):
         "title": "Meine Abstimmungen",
         "is_authenticated": request.user.is_authenticated,
     })
+
+
+def catch_all(request, resource):
+    return redirect("home")
