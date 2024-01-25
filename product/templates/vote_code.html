@@ -61,7 +61,7 @@
 
               {% for field in form.visible_fields %}
                 {% if "option_" in field.name %}
-                  <div class="col-3 d-none"></div>
+                  <div class="col-3 d-none d-lg-flex"></div>
                   <div class="col-12 col-lg-6 mt-4">
                     {{ field.errors }}
                     <div class="input-group d-flex justify-content-center input-group-lg">
@@ -71,7 +71,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-3 d-none"></div>
+                  <div class="col-3 d-none d-lg-flex"></div>
                 {% endif %}
               {% endfor %}
             </div>
