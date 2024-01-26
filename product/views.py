@@ -258,14 +258,14 @@ def label_for_option(option):
     if option.poll.poll_type in ["POLL", "TIER", "RANK"]:
         return option.text
     if option.poll.poll_type == "DATE":
-        locale.setlocale(locale.LC_ALL, "de_DE")
+        locale.setlocale(locale.LC_ALL, "de_DE.utf8")
         if option.poll.date_mode == "DATE":
             return f"{option.date.strftime('%A, %d. %B %Y')}"
         if option.poll.date_mode == "TIME":
             return f"{option.time.strftime('%H:%M')} Uhr"
         if option.poll.date_mode == "BOTH":
             return f"{option.date.strftime('%A, %d.%m.%Y')} um {option.time.strftime('%H:%M')} Uhr"
-        locale.setlocale(locale.LC_ALL, "en_US")
+        locale.setlocale(locale.LC_ALL, "en_US.utf8")
 
 
 def get_result(poll):
