@@ -50,9 +50,9 @@
         <button class="btn nav-btn px-4" type="submit">Los</button>
       </form>
       <ul class="navbar-nav">
-        <li class="nav-item px-1">
-          <a class="nav-link" href="{% url 'log' %}">Meine Abstimmungen</a>
-        </li>
+{#        <li class="nav-item px-1">#}
+{#          <a class="nav-link" href="{% url 'log' %}">Meine Abstimmungen</a>#}
+{#        </li>#}
         <li class="nav-item px-1">
           {% if is_authenticated %}
             <a href="{% url 'profile' %}" class="nav-link">Mein Profil</a>
