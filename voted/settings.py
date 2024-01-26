@@ -20,14 +20,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = dotenv_values(BASE_DIR / "voted/.env")
 
 # SECURITY WARNING: NEVER set to False in production environment!
-PRODUCTION = True
+PRODUCTION = False
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-oy(@jsyk3zt%s0rdn^7j!6_+_8i$9*nme4h)t-j0o^jxp(y9ur' \
     if not PRODUCTION else env.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = PRODUCTION
+DEBUG = True
 
 ALLOWED_HOSTS = [".localhost", ".49.12.107.173", ".johannfoell.de"]
 
