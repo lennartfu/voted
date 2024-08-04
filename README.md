@@ -28,9 +28,6 @@ Eine Webanwendung, die das Erstellen, Teilen und Bearbeiten von Abstimmungen, Te
 
 ## Dokumentation:
 
-Die Webanwendung sollte jederzeit unter https://johannfoell.de erreichbar sein. Bei Problemen bitte per Slack 
-kontaktieren.
-
 ### Installation:
 
 Zum Installieren und Ausführen des lokalen Entwicklungs-Servers wird ein Terminal bzw. eine Kommandozeilen-Applikation
